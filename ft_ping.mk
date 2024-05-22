@@ -23,4 +23,5 @@ CFLAGS_DBG :=                       \
     -fstack-protector-strong        \
     -fno-optimize-sibling-calls 
 
-SRCS :=                             
+SRCS :=                             \
+    utils/print_man.c
