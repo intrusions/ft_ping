@@ -11,6 +11,11 @@
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <sys/socket.h>
+// #include <sys/type.h>
+
+#include <unistd.h>
+#include <sys/types.h>
 
 // ========================================================================= //
 //                                   Define                                  //
@@ -38,6 +43,13 @@ typedef int64_t i64;
 //                                  Structure                                //
 // ========================================================================= //
 
+typedef struct {
+    i32         sockfd;
+    u16         pid;
+
+    u32         minMS;
+    u32         maxMS;
+} t_data;
 
 
 // ========================================================================= //
