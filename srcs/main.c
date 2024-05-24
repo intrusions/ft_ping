@@ -14,10 +14,10 @@ static void send_ping(t_data *data, char *ip)
     struct sockaddr_in r_addr;
     socklen_t addr_len = sizeof(r_addr);
     u16 n_sequence = 0;
-    struct timeval start_time, end_time;
 
     while (!SIG_EXIT) {
         t_packet packet;
+        struct timeval start_time, end_time;
         ++n_sequence;
         
         prepare_packet(data, &packet, n_sequence);
@@ -30,7 +30,6 @@ static void send_ping(t_data *data, char *ip)
 
 static bool initialization(int ac, char **av, t_data *data)
 {
-    i32 optval = 1;
     data->pid = getpid();
     data->delay = 1;
     memset(&data->dest, 0, sizeof(data->dest));
@@ -41,6 +40,7 @@ static bool initialization(int ac, char **av, t_data *data)
         return true;
     }
 
+    i32 optval = 1;
     if (setsockopt(data->sockfd, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) != 0) {
         fprintf(stderr, "error setting socket options\n");
         return true;
@@ -69,6 +69,7 @@ int main(int ac, char **av)
         return EXIT_FAILURE;
     }
     if (initialization(ac, av, &data)) {
+        close(data.sockfd);
         return EXIT_FAILURE;
     }
 
