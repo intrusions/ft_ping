@@ -24,4 +24,10 @@ CFLAGS_DBG :=                       \
     -fno-optimize-sibling-calls 
 
 SRCS :=                             \
-    utils/print_man.c
+    core/prepare_packet.c           \
+    core/send_packet.c              \
+    core/recv_packet.c              \
+    utils/print_man.c               \
+    utils/manage_flags.c            \
+    utils/checksum.c                \
+    debug/print_recv_packet.c
