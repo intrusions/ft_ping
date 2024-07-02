@@ -6,6 +6,7 @@ static void sig_handler(const int signal)
 {
     if (signal == SIGINT) {
         SIG_EXIT = true;
+        fprintf(stdout, "\n");
     }
 }
 
@@ -14,6 +15,10 @@ static void send_ping(t_data *data, char *ip)
     struct sockaddr_in r_addr;
     socklen_t addr_len = sizeof(r_addr);
     u16 n_sequence = 0;
+    u16 n_packet_received = 0;
+    
+    struct timeval ping_start_time;
+    gettimeofday(&ping_start_time, NULL);
 
     while (!SIG_EXIT) {
         t_packet packet;
@@ -22,16 +27,20 @@ static void send_ping(t_data *data, char *ip)
         
         prepare_packet(data, &packet, n_sequence);
         send_packet(data, &packet, &start_time);
-        recv_packet(data->sockfd, &packet, &r_addr, &addr_len, ip, n_sequence, &start_time, &end_time);
+        recv_packet(data->sockfd, &packet, &r_addr, &addr_len, ip, n_sequence, &n_packet_received, &start_time, &end_time);
 
         usleep(data->delay * 1000000);
     }
+    struct timeval ping_end_time;
+    gettimeofday(&ping_end_time, NULL);
+    
+    print_statistics(n_sequence, n_packet_received, ping_start_time, ping_end_time, ip);
 }
 
 static bool initialization(int ac, char **av, t_data *data)
 {
     data->pid = getpid();
-    data->delay = 1;
+    data->delay = PING_SENDING_DELAY;
     memset(&data->dest, 0, sizeof(data->dest));
     data->dest.sin_family = AF_INET;
     
@@ -50,7 +59,7 @@ static bool initialization(int ac, char **av, t_data *data)
 
 int main(int ac, char **av)
 {
-    u8      flags = 0x0;
+    u8 flags = 0x0;
     t_data data;
 
     memset(&data, 0, sizeof(data));

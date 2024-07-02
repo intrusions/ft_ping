@@ -27,6 +27,7 @@
 
 #define FLAG_V 0x01
 
+#define PING_SENDING_DELAY 1
 #define PING_PKT_SIZE 64
 
 
@@ -70,11 +71,12 @@ typedef struct {
 /* core */
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
 void send_packet(t_data *data, t_packet *packet, struct timeval *start_time);
-void recv_packet(u32 sockfd, t_packet *packet, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, struct timeval *start_time, struct timeval *end_time);
+void recv_packet(u32 sockfd, t_packet *packet, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time);
 
 
 /* utils */
 void    print_man();
+void    print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *ip);
 bool    manage_flags(i32 ac, char **av, u8 *flags);
 u16     checksum(void *b, int len);
 
