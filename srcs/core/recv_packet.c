@@ -13,6 +13,6 @@ void recv_packet(u32 sockfd, t_packet *packet, struct sockaddr_in *r_addr, sockl
         gettimeofday(end_time, NULL);
 
         double time_elapsed = calcul_latency(*start_time, *end_time);
-        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.2f ms\n", PING_PKT_SIZE, ip, n_sequence, 42, time_elapsed);
+        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", PING_PKT_SIZE, ip, n_sequence, 42, time_elapsed);
     }
 }

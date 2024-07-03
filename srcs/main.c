@@ -20,7 +20,7 @@ static void send_ping(t_data *data, char *ip)
     struct timeval ping_start_time;
     gettimeofday(&ping_start_time, NULL);
 
-    print_header(data, ip);
+    print_header(data);
     while (!SIG_EXIT) {
         t_packet packet;
         struct timeval start_time, end_time;
@@ -28,9 +28,9 @@ static void send_ping(t_data *data, char *ip)
         
         prepare_packet(data, &packet, n_sequence);
         send_packet(data, &packet, &start_time);
-        recv_packet(data->sockfd, &packet, &r_addr, &addr_len, ip, n_sequence, &n_packet_received, &start_time, &end_time);
+        recv_packet(data->sockfd, &packet, &r_addr, &addr_len, data->hostname, n_sequence, &n_packet_received, &start_time, &end_time);
 
-        usleep(data->delay * 1000000);
+        usleep(PING_SENDING_DELAY * 1000000);
     }
     struct timeval ping_end_time;
     gettimeofday(&ping_end_time, NULL);
@@ -38,36 +38,36 @@ static void send_ping(t_data *data, char *ip)
     print_statistics(n_sequence, n_packet_received, ping_start_time, ping_end_time, ip);
 }
 
-static bool initialization(int ac, char **av, t_data *data)
+static bool initialization(t_data *data)
 {
-
     if ((data->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
         fprintf(stderr, "socket creation failed\n");
         return EXIT_FAILURE;
     }
 
     data->pid = getpid();
-    data->delay = PING_SENDING_DELAY;
+    
     memset(&data->dest, 0, sizeof(data->dest));
     data->dest.sin_family = AF_INET;
     
-    if (inet_pton(AF_INET, av[ac - 1], &data->dest.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, data->hostname, &data->dest.sin_addr) <= 0) {
         fprintf(stderr, "invalid address\n");
-        return true;
+        return EXIT_FAILURE;
     }
 
     i32 optval = 1;
     if (setsockopt(data->sockfd, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) != 0) {
         fprintf(stderr, "error setting socket options\n");
-        return true;
+        return EXIT_FAILURE;
     }
-    return false;
+    return EXIT_SUCCESS;
 }
 
 int main(int ac, char **av)
 {
     t_data data;
     memset(&data, 0, sizeof(data));
+    data.hostname_in = av[ac - 1];
 
     av++, ac--;
 
@@ -78,7 +78,10 @@ int main(int ac, char **av)
     if (manage_flags(ac, av, &data.flags)) {
         return EXIT_SUCCESS;
     }
-    if (initialization(ac, av, &data)) {
+    if (reverse_dns(data.hostname_in, data.hostname)) {
+        return EXIT_FAILURE;
+    }
+    if (initialization(&data)) {
         close(data.sockfd);
         return EXIT_FAILURE;
     }
@@ -86,5 +89,6 @@ int main(int ac, char **av)
     signal(SIGINT, sig_handler);
     send_ping(&data, av[ac - 1]);
     close(data.sockfd);
+
     return EXIT_SUCCESS;
 }

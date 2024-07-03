@@ -12,6 +12,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <fcntl.h>
+#include <netdb.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -19,7 +21,7 @@
 #include <netinet/in.h>
 #include <netinet/ip_icmp.h>
 #include <arpa/inet.h>
-#include <fcntl.h>
+
 
 // ========================================================================= //
 //                                   Define                                  //
@@ -53,8 +55,10 @@ typedef int64_t i64;
 typedef struct {
     i32         sockfd;
     u16         pid;
-    u32         delay;
     u8          flags;
+    
+    char        *hostname_in;
+    char        hostname[INET6_ADDRSTRLEN];
 
     struct sockaddr_in dest;
 } t_data;
@@ -70,6 +74,7 @@ typedef struct {
 // ========================================================================= //
 
 /* core */
+bool reverse_dns(char *ip, char *hostname);
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
 void send_packet(t_data *data, t_packet *packet, struct timeval *start_time);
 void recv_packet(u32 sockfd, t_packet *packet, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time);
@@ -77,8 +82,8 @@ void recv_packet(u32 sockfd, t_packet *packet, struct sockaddr_in *r_addr, sockl
 
 /* utils */
 void    print_man();
-void    print_header(t_data *data, char *ip);
-void    print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *ip);
+void    print_header(t_data *data);
+void    print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in);
 
 bool    manage_flags(i32 ac, char **av, u8 *flags);
 u16     checksum(void *b, int len);
