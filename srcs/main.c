@@ -42,7 +42,7 @@ static bool initialization(t_data *data)
 {
     if ((data->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
         fprintf(stderr, "socket creation failed\n");
-        return EXIT_FAILURE;
+        return true;
     }
 
     data->pid = getpid();
@@ -52,15 +52,15 @@ static bool initialization(t_data *data)
     
     if (inet_pton(AF_INET, data->hostname, &data->dest.sin_addr) <= 0) {
         fprintf(stderr, "invalid address\n");
-        return EXIT_FAILURE;
+        return true;
     }
 
     i32 optval = 1;
     if (setsockopt(data->sockfd, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) != 0) {
         fprintf(stderr, "error setting socket options\n");
-        return EXIT_FAILURE;
+        return true;
     }
-    return EXIT_SUCCESS;
+    return false;
 }
 
 int main(int ac, char **av)
