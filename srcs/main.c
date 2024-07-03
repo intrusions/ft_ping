@@ -20,6 +20,7 @@ static void send_ping(t_data *data, char *ip)
     struct timeval ping_start_time;
     gettimeofday(&ping_start_time, NULL);
 
+    print_header(data, ip);
     while (!SIG_EXIT) {
         t_packet packet;
         struct timeval start_time, end_time;
@@ -39,6 +40,12 @@ static void send_ping(t_data *data, char *ip)
 
 static bool initialization(int ac, char **av, t_data *data)
 {
+
+    if ((data->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
+        fprintf(stderr, "socket creation failed\n");
+        return EXIT_FAILURE;
+    }
+
     data->pid = getpid();
     data->delay = PING_SENDING_DELAY;
     memset(&data->dest, 0, sizeof(data->dest));
@@ -59,9 +66,7 @@ static bool initialization(int ac, char **av, t_data *data)
 
 int main(int ac, char **av)
 {
-    u8 flags = 0x0;
     t_data data;
-
     memset(&data, 0, sizeof(data));
 
     av++, ac--;
@@ -70,12 +75,8 @@ int main(int ac, char **av)
         fprintf(stderr, "ping: usage error: Destination address required\n");
         return EXIT_FAILURE;
     }
-    if (manage_flags(ac, av, &flags)) {
+    if (manage_flags(ac, av, &data.flags)) {
         return EXIT_SUCCESS;
-    }
-    if ((data.sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
-        fprintf(stderr, "socket creation failed\n");
-        return EXIT_FAILURE;
     }
     if (initialization(ac, av, &data)) {
         close(data.sockfd);

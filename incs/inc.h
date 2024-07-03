@@ -54,6 +54,7 @@ typedef struct {
     i32         sockfd;
     u16         pid;
     u32         delay;
+    u8          flags;
 
     struct sockaddr_in dest;
 } t_data;
@@ -76,9 +77,12 @@ void recv_packet(u32 sockfd, t_packet *packet, struct sockaddr_in *r_addr, sockl
 
 /* utils */
 void    print_man();
+void    print_header(t_data *data, char *ip);
 void    print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *ip);
+
 bool    manage_flags(i32 ac, char **av, u8 *flags);
 u16     checksum(void *b, int len);
+double  calcul_latency(struct timeval start_time, struct timeval end_time);
 
 
 /* debug */
