@@ -16,10 +16,11 @@ void print_man()
 
 void print_header(t_data *data)
 {
+    fprintf(stdout, "PING %s (%s): 56 data bytes", data->hostname_in, data->hostname);
+
     if (data->flags & FLAG_V)
-        fprintf(stdout, "PING %s (%s): 56 data bytes, id 0x%x = %d\n", data->hostname_in, data->hostname, data->pid, data->pid);
-    else
-        fprintf(stdout, "PING %s (%s): 56 data bytes\n", data->hostname_in, data->hostname);
+        fprintf(stdout, ", id 0x%04x = %d", data->pid, data->pid);
+    fprintf(stdout, "\n");
 }
 
 void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in)

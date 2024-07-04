@@ -32,4 +32,4 @@ SRCS :=                             \
     utils/manage_flags.c            \
     utils/checksum.c                \
     utils/calcul_latency.c          \
-    debug/print_recv_packet.c
+    debug/debug_print.c
