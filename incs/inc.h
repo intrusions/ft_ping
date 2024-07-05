@@ -34,6 +34,15 @@
 #define PING_PKT_SIZE 64
 
 
+#define ICMP_PACKET_SUCCESS     0
+#define ERR_ICMP_DEFAULT        -1
+#define ERR_ICMP_TIME_EXCEEDED  -2
+#define ERR_ICMP_NET_UNREACH    -3
+#define ERR_ICMP_HOST_UNREACH   -4
+#define ERR_ICMP_PROT_UNREACH   -5
+#define ERR_ICMP_PORT_UNREACH   -6
+
+
 // ========================================================================= //
 //                                  Typedef                                  //
 // ========================================================================= //
