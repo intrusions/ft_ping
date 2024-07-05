@@ -27,7 +27,7 @@ static void send_ping(t_data *data, char *ip)
         
         prepare_packet(data, &packet, n_sequence);
         send_packet(data, &packet, &start_time, &n_sequence);
-        recv_packet(data, &packet, &r_addr, &addr_len, data->hostname, n_sequence, &n_packet_received, &start_time, &end_time);
+        recv_packet(data, &r_addr, &addr_len, data->hostname, n_sequence, &n_packet_received, &start_time, &end_time);
 
         usleep(PING_SENDING_DELAY * 1000000);
     }

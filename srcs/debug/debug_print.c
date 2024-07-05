@@ -32,8 +32,8 @@ void print_recv_packet(t_packet *packet)
 
 void print_sended_packet(t_packet *packet)
 {
-    printf("[ICMP Packet Debug Info]:\n");
     printf("[Packet sended]:\n");
+    printf("[ICMP Header]:\n");
     printf(" |-Type        : %d\n", packet->hdr.type);
     printf(" |-Code        : %d\n", packet->hdr.code);
     printf(" |-Checksum    : %d\n", packet->hdr.checksum);
@@ -43,5 +43,31 @@ void print_sended_packet(t_packet *packet)
     printf("Message Data :\n");
     printf(" |-Size        : %lu bytes\n", sizeof(packet->msg));
     printf(" |-Content     : %s\n", packet->msg);
+    printf("--------------------------------------------\n\n");
+}
+
+void print_iphdr_n_icmphdr(struct iphdr *ip_header, struct icmphdr *icmp_header) {
+    printf("[Packet Received]:\n");
+    
+    printf("[IP Header]:\n");
+    printf(" |-Version     : %d\n", ip_header->version);
+    printf(" |-IHL         : %d (bytes)\n", ip_header->ihl * 4);
+    printf(" |-TOS         : %d\n", ip_header->tos);
+    printf(" |-Total Length: %d\n", ntohs(ip_header->tot_len));
+    printf(" |-ID          : %d\n", ntohs(ip_header->id));
+    printf(" |-Frag Offset : %d\n", ntohs(ip_header->frag_off) & 0x1FFF);
+    printf(" |-TTL         : %d\n", ip_header->ttl);
+    printf(" |-Protocol    : %d\n", ip_header->protocol);
+    printf(" |-Checksum    : %d\n", ntohs(ip_header->check));
+    printf(" |-Source IP   : %s\n", inet_ntoa(*(struct in_addr *)&ip_header->saddr));
+    printf(" |-Dest IP     : %s\n", inet_ntoa(*(struct in_addr *)&ip_header->daddr));
+    printf("\n");
+
+    printf("[ICMP Header]:\n");
+    printf(" |-Type        : %d\n", icmp_header->type);
+    printf(" |-Code        : %d\n", icmp_header->code);
+    printf(" |-Checksum    : %d\n", icmp_header->checksum);
+    printf(" |-Identifier  : %d\n", icmp_header->un.echo.id);
+    printf(" |-Sequence    : %d\n", icmp_header->un.echo.sequence);
     printf("--------------------------------------------\n\n");
 }
