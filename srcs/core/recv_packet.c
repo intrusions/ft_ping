@@ -1,16 +1,20 @@
 #include "inc.h"
 
-static bool verify_packet_integrity(t_data *data, char *response, u8 *ttl)
+static bool verify_packet_integrity(t_data *data, char *response, u16 n_sequence, u8 *ttl)
 {
     struct iphdr *ip_hdr = (struct iphdr *)response;
     struct icmphdr *icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
     // print_iphdr_n_icmphdr(ip_hdr, icmp_hdr);
 
     /* need other checks and dedicated messages on each one of them */
-    if (icmp_hdr->type == ICMP_ECHOREPLY && icmp_hdr->un.echo.id == data->pid) {
+    if (icmp_hdr->type == ICMP_ECHOREPLY &&
+        icmp_hdr->un.echo.id == data->pid &&
+        icmp_hdr->un.echo.sequence == n_sequence - 1) {
         *ttl = ip_hdr->ttl;
         return true;
     }
+
+    
     return false;
 }
 
@@ -28,7 +32,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
     }
 
     u8 ttl;
-    if (verify_packet_integrity(data, buff, &ttl)) {
+    if (verify_packet_integrity(data, buff, n_sequence, &ttl)) {
         ++*n_packet_received;
         gettimeofday(end_time, NULL);
 
