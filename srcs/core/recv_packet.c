@@ -72,7 +72,10 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
     struct iphdr *ip_hdr = (struct iphdr *)response;
     struct icmphdr *icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
     u8 packet_size = bytes_received - sizeof(struct iphdr);
-    // print_received_packet(ip_hdr, icmp_hdr, response + 28);
+
+    if (data->flags & FLAG_D) {
+        print_received_packet(ip_hdr, icmp_hdr, response + 28);
+    }
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
