@@ -30,6 +30,7 @@
 #define FLAG_V 0x01
 
 #define PING_SENDING_DELAY 1
+#define PING_MAX_PKT_SIZE 84
 #define PING_PKT_SIZE 64
 
 

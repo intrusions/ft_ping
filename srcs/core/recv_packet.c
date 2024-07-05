@@ -6,7 +6,6 @@ static bool verify_packet_integrity(t_data *data, char *response, u16 n_sequence
     struct icmphdr *icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
     // print_iphdr_n_icmphdr(ip_hdr, icmp_hdr);
 
-    /* need other checks and dedicated messages on each one of them */
     if (icmp_hdr->type == ICMP_ECHOREPLY &&
         icmp_hdr->un.echo.id == data->pid &&
         icmp_hdr->un.echo.sequence == n_sequence - 1) {
@@ -14,14 +13,13 @@ static bool verify_packet_integrity(t_data *data, char *response, u16 n_sequence
         return true;
     }
 
-    
+    /* need other checks and dedicated messages on each one of them */
     return false;
 }
 
 void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time)
 {
-    char buff[1024];
-
+    char buff[PING_MAX_PKT_SIZE];
     memset(buff, 0, sizeof(buff));
     
     i32 bytes_received = 0;
