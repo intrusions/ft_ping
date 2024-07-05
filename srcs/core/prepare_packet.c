@@ -13,6 +13,6 @@ void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence)
     }
     packet->msg[sizeof(packet->msg) - 1] = 0;
 
-    packet->hdr.checksum = checksum(packet, sizeof(packet));
+    packet->hdr.checksum = checksum(packet, sizeof(*packet));
     // print_sended_packet(packet);
 }

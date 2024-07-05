@@ -4,15 +4,14 @@ static bool verify_packet_integrity(t_data *data, char *response, u16 n_sequence
 {
     struct iphdr *ip_hdr = (struct iphdr *)response;
     struct icmphdr *icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
-    // print_iphdr_n_icmphdr(ip_hdr, icmp_hdr);
-
+    // print_received_packet(ip_hdr, icmp_hdr, response + 28);
+    
     if (icmp_hdr->type == ICMP_ECHOREPLY &&
         icmp_hdr->un.echo.id == data->pid &&
         icmp_hdr->un.echo.sequence == n_sequence - 1) {
         *ttl = ip_hdr->ttl;
         return true;
     }
-
     /* need other checks and dedicated messages on each one of them */
     return false;
 }
