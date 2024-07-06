@@ -103,7 +103,7 @@ double  calcul_latency(struct timeval start_time, struct timeval end_time);
 
 /* debug */
 void print_recv_packet(t_packet *packet);
-void print_sended_packet(t_packet *packet);
+void print_sent_packet(t_packet *packet);
 void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *msg);
 
 #endif /* INC_H */

@@ -1,8 +1,8 @@
 #include "inc.h"
 
-void print_sended_packet(t_packet *packet)
+void print_sent_packet(t_packet *packet)
 {
-    printf("[Packet sended]\n");
+    printf("[Packet sent]\n");
     printf("[ICMP Header]\n");
     printf(" |-Type        : %d\n", packet->hdr.type);
     printf(" |-Code        : %d\n", packet->hdr.code);
