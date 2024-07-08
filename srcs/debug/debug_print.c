@@ -11,12 +11,12 @@ void print_sent_packet(t_packet *packet)
     printf(" |-Sequence    : %d\n", packet->hdr.un.echo.sequence);
 
     printf("[Message Data]\n");
-    printf(" |-Size        : %lu bytes\n", sizeof(packet->msg));
-    printf(" |-Content     : %s\n", packet->msg);
+    printf(" |-Size        : %lu bytes\n", sizeof(packet->payload));
+    printf(" |-Content     : %s\n", packet->payload);
     printf("------------------------------------------------------------------------------\n\n");
 }
 
-void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *msg) {
+void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *payload) {
     printf("[Packet Received]\n");
     
     printf("[IP Header]\n");
@@ -40,7 +40,7 @@ void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header,
     printf(" |-Sequence    : %d\n", icmp_header->un.echo.sequence);
 
     printf("[Message Data]\n");
-    printf(" |-Size        : %lu bytes\n", strlen(msg) + 1);
-    printf(" |-Content     : %s\n", msg);
+    printf(" |-Size        : %lu bytes\n", strlen(payload) + 1);
+    printf(" |-Content     : %s\n", payload);
     printf("------------------------------------------------------------------------------\n\n");
 }

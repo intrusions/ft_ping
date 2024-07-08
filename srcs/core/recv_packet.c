@@ -54,6 +54,12 @@ void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
             fprintf(stdout, "%d bytes from %s: Destination Unreachable, code=%d\n", packet_size, ip, icmphdr_code);
             break;
     }
+
+    /*
+    if (data->flags & FLAG_V) {
+        print_verbose();    
+    }
+    */
 }
 
 void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time)

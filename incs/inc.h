@@ -76,7 +76,7 @@ typedef struct {
 
 typedef struct {
     struct icmphdr  hdr;
-    char            msg[PING_PKT_SIZE - sizeof(struct icmphdr)];
+    char            payload[PING_PKT_SIZE - sizeof(struct icmphdr)];
 } t_packet;
 
 
@@ -102,8 +102,7 @@ double  calcul_latency(struct timeval start_time, struct timeval end_time);
 
 
 /* debug */
-void print_recv_packet(t_packet *packet);
 void print_sent_packet(t_packet *packet);
-void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *msg);
+void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *payload);
 
 #endif /* INC_H */
