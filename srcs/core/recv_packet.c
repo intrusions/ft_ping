@@ -1,7 +1,7 @@
 #include "inc.h"
 
 static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
-{
+{   
     switch (status_code) {
 
         case ERR_ICMP_TIME_EXCEEDED:
@@ -79,13 +79,9 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
         packet_size = bytes_received - sizeof(struct iphdr);
 
-        if (data->flags & FLAG_D) {
+        if (data->flags & FLAG_D)
             print_received_packet(ip_hdr, icmp_hdr, response + 28);
-        }
-        if (data->flags & FLAG_V) {
-            print_verbose_option(ip_hdr, icmp_hdr);
-        }
-
+            
     } while (!strcmp(ip, "127.0.0.1") && icmp_hdr->type == 8);
     
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
@@ -96,6 +92,8 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", packet_size, ip, n_sequence, ttl, time_elapsed);
         push_time(times, time_elapsed);
     } else {
+        if (data->flags & FLAG_V)
+            print_verbose_option(ip_hdr, icmp_hdr);
         print_recv_err(status_code, packet_size, ip, icmp_hdr->code);
     }
 }
