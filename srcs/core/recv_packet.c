@@ -1,32 +1,6 @@
 #include "inc.h"
 
-static i8 verify_packet_integrity(t_data *data, struct iphdr *ip_hdr, struct icmphdr *icmp_hdr, u16 n_sequence, u8 *ttl)
-{
-    if (icmp_hdr->type == ICMP_ECHOREPLY &&
-        icmp_hdr->un.echo.id == data->pid &&
-        icmp_hdr->un.echo.sequence == n_sequence - 1) {
-        *ttl = ip_hdr->ttl;
-        return ICMP_PACKET_SUCCESS;
-    }
-
-    if (icmp_hdr->type == ICMP_TIME_EXCEEDED && icmp_hdr->code == ICMP_EXC_TTL) {
-        return ERR_ICMP_TIME_EXCEEDED;
-    }
-
-    if (icmp_hdr->type == ICMP_DEST_UNREACH) {
-        switch (icmp_hdr->code) {
-            case ICMP_NET_UNREACH:  return ERR_ICMP_NET_UNREACH;
-            case ICMP_HOST_UNREACH: return ERR_ICMP_HOST_UNREACH;
-            case ICMP_PROT_UNREACH: return ERR_ICMP_PROT_UNREACH;
-            case ICMP_PORT_UNREACH: return ERR_ICMP_PORT_UNREACH;
-            default:                return ERR_ICMP_DEFAULT;
-        }
-    }
-
-    return ERR_ICMP_DEFAULT;
-}
-
-void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
+static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
 {
     switch (status_code) {
 
@@ -56,6 +30,32 @@ void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
     }
 }
 
+static i8 verify_packet_integrity(t_data *data, struct iphdr *ip_hdr, struct icmphdr *icmp_hdr, u16 n_sequence, u8 *ttl)
+{
+    if (icmp_hdr->type == ICMP_ECHOREPLY &&
+        icmp_hdr->un.echo.id == data->pid &&
+        icmp_hdr->un.echo.sequence == n_sequence - 1) {
+        *ttl = ip_hdr->ttl;
+        return ICMP_PACKET_SUCCESS;
+    }
+
+    if (icmp_hdr->type == ICMP_TIME_EXCEEDED && icmp_hdr->code == ICMP_EXC_TTL) {
+        return ERR_ICMP_TIME_EXCEEDED;
+    }
+
+    if (icmp_hdr->type == ICMP_DEST_UNREACH) {
+        switch (icmp_hdr->code) {
+            case ICMP_NET_UNREACH:  return ERR_ICMP_NET_UNREACH;
+            case ICMP_HOST_UNREACH: return ERR_ICMP_HOST_UNREACH;
+            case ICMP_PROT_UNREACH: return ERR_ICMP_PROT_UNREACH;
+            case ICMP_PORT_UNREACH: return ERR_ICMP_PORT_UNREACH;
+            default:                return ERR_ICMP_DEFAULT;
+        }
+    }
+
+    return ERR_ICMP_DEFAULT;
+}
+
 void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time)
 {
     char response[PING_MAX_PKT_SIZE];
@@ -81,6 +81,9 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
 
         if (data->flags & FLAG_D) {
             print_received_packet(ip_hdr, icmp_hdr, response + 28);
+        }
+        if (data->flags & FLAG_V) {
+            print_verbose_option(ip_hdr, icmp_hdr);
         }
 
     } while (!strcmp(ip, "127.0.0.1") && icmp_hdr->type == 8);

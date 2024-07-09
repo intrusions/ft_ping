@@ -91,9 +91,10 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
 
 
 /* utils */
-void    print_man();
-void    print_header(t_data *data);
-void    print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in);
+void print_man();
+void print_header(t_data *data);
+void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in);
+void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr);
 
 bool    manage_flags(i32 ac, char **av, u8 *flags);
 u16     checksum(void *b, int len);

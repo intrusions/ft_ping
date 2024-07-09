@@ -31,3 +31,15 @@ void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping
     fprintf(stdout, "--- %s ping statistics ---\n", hostname_in);
     fprintf(stdout, "%d packets transmitted, %d received, %d%% packet loss, time %.0fms\n", n_sequence, n_packet_received, packet_loss, time_elapsed);
 }
+
+// IP Hdr Dump:
+//  0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 
+// Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src	Dst	Data
+//  0  0  00 0000 0000   0 0000  00  00 0000 0.0.0.0  0.0.0.0 
+// ICMP: type 0, code 0, size 1, id 0x0800, seq 0x0000
+void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
+{
+    (void)ip_hdr;
+    (void)icmp_hdr;
+    return ;
+}
