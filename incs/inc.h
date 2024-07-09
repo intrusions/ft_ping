@@ -34,7 +34,6 @@
 #define PING_MAX_PKT_SIZE 84
 #define PING_PKT_SIZE 64
 
-
 #define ICMP_PACKET_SUCCESS     0
 #define ERR_ICMP_DEFAULT        -1
 #define ERR_ICMP_TIME_EXCEEDED  -2

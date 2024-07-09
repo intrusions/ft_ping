@@ -54,12 +54,6 @@ void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
             fprintf(stdout, "%d bytes from %s: Destination Unreachable, code=%d\n", packet_size, ip, icmphdr_code);
             break;
     }
-
-    /*
-    if (data->flags & FLAG_V) {
-        print_verbose();    
-    }
-    */
 }
 
 void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time)
@@ -67,22 +61,30 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
     char response[PING_MAX_PKT_SIZE];
     u8 ttl;
     i32 bytes_received = 0;
+    
+    struct iphdr *ip_hdr;
+    struct icmphdr *icmp_hdr;
+    u8 packet_size;
+    
     memset(response, 0, sizeof(response));
-    
-    if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (struct sockaddr *)r_addr, addr_len)) <= 0) {
-        fprintf(stderr, "packet receive failed\n");
-        close(data->sockfd);
-        exit(EXIT_FAILURE);
-    }
-    
-    struct iphdr *ip_hdr = (struct iphdr *)response;
-    struct icmphdr *icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
-    u8 packet_size = bytes_received - sizeof(struct iphdr);
 
-    if (data->flags & FLAG_D) {
-        print_received_packet(ip_hdr, icmp_hdr, response + 28);
-    }
+    do {
+        if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (struct sockaddr *)r_addr, addr_len)) <= 0) {
+            fprintf(stderr, "packet receive failed\n");
+            close(data->sockfd);
+            exit(EXIT_FAILURE);
+        }
+            
+        ip_hdr = (struct iphdr *)response;
+        icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
+        packet_size = bytes_received - sizeof(struct iphdr);
 
+        if (data->flags & FLAG_D) {
+            print_received_packet(ip_hdr, icmp_hdr, response + 28);
+        }
+
+    } while (!strcmp(ip, "127.0.0.1") && icmp_hdr->type == 8);
+    
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
         ++*n_packet_received;
