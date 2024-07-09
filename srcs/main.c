@@ -20,6 +20,9 @@ static void send_ping(t_data *data, char *ip)
     struct timeval ping_start_time;
     gettimeofday(&ping_start_time, NULL);
 
+    t_times times;
+    memset(&times, 0, sizeof(t_times));
+
     print_header(data);
     while (!SIG_EXIT) {
         t_packet packet;
@@ -27,14 +30,15 @@ static void send_ping(t_data *data, char *ip)
         
         prepare_packet(data, &packet, n_sequence);
         send_packet(data, &packet, &start_time, &n_sequence);
-        recv_packet(data, &r_addr, &addr_len, data->hostname, n_sequence, &n_packet_received, &start_time, &end_time);
+        recv_packet(data, &r_addr, &addr_len, data->hostname, n_sequence, &n_packet_received, &start_time, &end_time, &times);
 
         usleep(PING_SENDING_DELAY * 1000000);
     }
     struct timeval ping_end_time;
     gettimeofday(&ping_end_time, NULL);
     
-    print_statistics(n_sequence, n_packet_received, ping_start_time, ping_end_time, ip);
+    print_statistics(n_sequence, n_packet_received, ping_start_time, ping_end_time, ip, &times);
+    free_times(&times);
 }
 
 static bool initialization(t_data *data)

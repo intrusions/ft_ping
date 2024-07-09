@@ -18,18 +18,23 @@ void print_header(t_data *data)
 {
     fprintf(stdout, "PING %s (%s): 56 data bytes", data->hostname_in, data->hostname);
 
-    if (data->flags & FLAG_V)
+    if (data->flags & FLAG_V) {
         fprintf(stdout, ", id 0x%04x = %d", data->pid, data->pid);
+    }
     fprintf(stdout, "\n");
 }
 
-void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in)
+void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in, t_times *times)
 {
     double  time_elapsed = calcul_latency(ping_start_time, ping_end_time);
     i32     packet_loss = (int)(((n_sequence - n_packet_received) / (float)n_sequence) * 100);
     
+    double avg, stddev, min, max;
+    calcul_statistics(times, &min, &max, &avg, &stddev);
+
     fprintf(stdout, "--- %s ping statistics ---\n", hostname_in);
     fprintf(stdout, "%d packets transmitted, %d received, %d%% packet loss, time %.0fms\n", n_sequence, n_packet_received, packet_loss, time_elapsed);
+    fprintf(stdout, "round-trip min/avg/max/stddev = %.3f/%.3f/%.3f/%.3f ms\n", min, avg, max, stddev);
 }
 
 // IP Hdr Dump:

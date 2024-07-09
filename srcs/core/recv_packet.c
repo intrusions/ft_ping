@@ -56,7 +56,7 @@ static i8 verify_packet_integrity(t_data *data, struct iphdr *ip_hdr, struct icm
     return ERR_ICMP_DEFAULT;
 }
 
-void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time)
+void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times)
 {
     char response[PING_MAX_PKT_SIZE];
     u8 ttl;
@@ -65,7 +65,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
     struct iphdr *ip_hdr;
     struct icmphdr *icmp_hdr;
     u8 packet_size;
-    
+
     memset(response, 0, sizeof(response));
 
     do {
@@ -94,6 +94,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         gettimeofday(end_time, NULL);
         double time_elapsed = calcul_latency(*start_time, *end_time);
         fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", packet_size, ip, n_sequence, ttl, time_elapsed);
+        push_time(times, time_elapsed);
     } else {
         print_recv_err(status_code, packet_size, ip, icmp_hdr->code);
     }

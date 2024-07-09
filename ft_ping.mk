@@ -9,7 +9,8 @@ CFLAGS :=                           \
     -Wall                           \
     -Wextra                         \
     -Werror                         \
-    -pedantic 
+    -pedantic                       \
+    -lm
 
 # export ASAN_OPTIONS="log_path=sanitizer.log"
 # export ASAN_OPTIONS="detect_leaks=1"
@@ -31,5 +32,6 @@ SRCS :=                             \
     utils/print.c                   \
     utils/manage_flags.c            \
     utils/checksum.c                \
-    utils/calcul_latency.c          \
+    utils/calcul.c                  \
+    utils/arr.c                     \
     debug/debug_print.c
