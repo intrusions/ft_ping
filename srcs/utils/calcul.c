@@ -10,7 +10,8 @@ double calcul_latency(struct timeval start_time, struct timeval end_time)
 
 void calcul_statistics(t_times *times, double *min, double *max, double *avg, double *stddev)
 {
-    double sum, sum_sq_diff = 0.0;
+    double sum = 0.0;
+    double sum_sq_diff = 0.0;
     
     *avg = 0.0;
     *stddev = 0.0;
