@@ -8,5 +8,6 @@ void push_time(t_times *times, double time)
 
 void free_times(t_times *times)
 {
-    free(times->arr);
+    if (times->size)
+        free(times->arr);
 }
