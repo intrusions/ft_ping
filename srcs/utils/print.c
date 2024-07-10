@@ -54,11 +54,6 @@ void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
 
 // void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
 // {
-//     char src_ip[INET_ADDRSTRLEN], dst_ip[INET_ADDRSTRLEN];
-
-//     inet_ntop(AF_INET, &ip_hdr->saddr, src_ip, INET_ADDRSTRLEN);
-//     inet_ntop(AF_INET, &ip_hdr->daddr, dst_ip, INET_ADDRSTRLEN);
-
 //     printf("IP Hdr Dump:\n");
 //     printf("  Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src       Dst\n");
 //     printf("  %1d  %1d  %02x %04x %04x   %1x %04x  %02x  %02x %04x %s %s\n",
@@ -72,8 +67,8 @@ void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
 //            ip_hdr->ttl,
 //            ip_hdr->protocol,
 //            ntohs(ip_hdr->check),
-//            src_ip,
-//            dst_ip);
+//            inet_ntoa(*(struct in_addr *)&ip_hdr->saddr),
+//            inet_ntoa(*(struct in_addr *)&ip_hdr->daddr));
 
 //     printf("ICMP: type %d, code %d, checksum 0x%04x, id 0x%04x, seq 0x%04x\n",
 //            icmp_hdr->type,

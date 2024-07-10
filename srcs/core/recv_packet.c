@@ -82,7 +82,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         if (data->flags & FLAG_D)
             print_received_packet(ip_hdr, icmp_hdr, response + 28);
         
-    } while (icmp_hdr->type == 8 && (!strcmp(ip, "192.168.0.16") || strcmp(ip, "127.0.0.1")));
+    } while (icmp_hdr->type == 8 && (!strcmp(ip, "192.168.0.16") || !strcmp(ip, "127.0.0.1")));
 
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
@@ -90,11 +90,12 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         ++*n_packet_received;
         gettimeofday(end_time, NULL);
         double time_elapsed = calcul_latency(*start_time, *end_time);
-        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", packet_size, ip, n_sequence, ttl, time_elapsed);
+        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", packet_size, inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), n_sequence, ttl, time_elapsed);
         push_time(times, time_elapsed);
     } else {
+        print_recv_err(status_code, packet_size, inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), icmp_hdr->code);
+        
         if (data->flags & FLAG_V)
             print_verbose_option(ip_hdr, icmp_hdr);
-        print_recv_err(status_code, packet_size, ip, icmp_hdr->code);
     }
 }
