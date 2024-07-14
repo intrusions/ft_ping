@@ -47,33 +47,44 @@ void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping
 // ICMP: type 0, code 0, size 1, id 0x0800, seq 0x0000
 void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
 {
-    (void)ip_hdr;
-    (void)icmp_hdr;
-    return ;
+    u8 *cp = (u8 *) ip_hdr + sizeof(struct iphdr);
+    u8 *ip_header = (u8 *)ip_hdr;
+    u64 hlen = ip_hdr->ihl * 4;
+
+    printf("IP Hdr Dump:\n");
+    for (u32 i = 0; i < sizeof(struct iphdr); i++) {
+
+        printf("%02x", ip_header[i]);
+        if (i % 2) {
+            printf(" ");
+        }
+    }
+    printf("\n");
+
+    printf("Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src\tDst\tData\n");
+    printf(" %1x  %1x  %02x %04x %04x   %1x %04x  %02x  %02x %04x %s  %s ",
+                ip_hdr->version,                                //Vr
+                ip_hdr->ihl,                                    //HL
+                ip_hdr->tos,                                    //TOS
+                ntohs(ip_hdr->tot_len),                         //Len
+                ntohs(ip_hdr->id),                              //ID
+                (ntohs(ip_hdr->frag_off) & 0xe000) >> 13,       //Flg
+                ntohs(ip_hdr->frag_off) & 0x1fff,               //off
+                ip_hdr->ttl,                                    //TTL
+                ip_hdr->protocol,                               //Pro
+                ntohs(ip_hdr->check),                           //cks
+                inet_ntoa(*(struct in_addr *) &ip_hdr->saddr),  //Src
+                inet_ntoa(*(struct in_addr *) &ip_hdr->daddr)); //Dst
+
+
+    while (hlen-- > sizeof(struct iphdr))
+        printf("%02x", *cp++);                                  //Data
+    printf("\n");
+
+    printf("ICMP: type %u, code %u, size %lu, id 0x%04x, seq 0x%04x\n",
+                icmp_hdr->type,                                             //Type
+                icmp_hdr->code,                                             //Code
+                ntohs(ip_hdr->tot_len) - (hlen + sizeof(struct iphdr)),     //Size
+                ntohs(icmp_hdr->un.echo.id),                                //ID
+                ntohs(icmp_hdr->un.echo.sequence));                         //Sequence
 }
-
-// void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
-// {
-//     printf("IP Hdr Dump:\n");
-//     printf("  Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src       Dst\n");
-//     printf("  %1d  %1d  %02x %04x %04x   %1x %04x  %02x  %02x %04x %s %s\n",
-//            ip_hdr->version,
-//            ip_hdr->ihl,
-//            ip_hdr->tos,
-//            ntohs(ip_hdr->tot_len),
-//            ntohs(ip_hdr->id),
-//            ip_hdr->frag_off >> 13,
-//            ntohs(ip_hdr->frag_off & 0x1FFF),
-//            ip_hdr->ttl,
-//            ip_hdr->protocol,
-//            ntohs(ip_hdr->check),
-//            inet_ntoa(*(struct in_addr *)&ip_hdr->saddr),
-//            inet_ntoa(*(struct in_addr *)&ip_hdr->daddr));
-
-//     printf("ICMP: type %d, code %d, checksum 0x%04x, id 0x%04x, seq 0x%04x\n",
-//            icmp_hdr->type,
-//            icmp_hdr->code,
-//            ntohs(icmp_hdr->checksum),
-//            ntohs(icmp_hdr->un.echo.id),
-//            ntohs(icmp_hdr->un.echo.sequence));
-// }
