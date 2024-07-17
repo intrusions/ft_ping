@@ -6,7 +6,6 @@ static void sig_handler(const int signal)
 {
     if (signal == SIGINT) {
         SIG_EXIT = true;
-        fprintf(stdout, "\n");
     }
 }
 
@@ -17,9 +16,6 @@ static void send_ping(t_data *data, char *ip)
     u16 n_sequence = 0;
     u16 n_packet_received = 0;
     
-    struct timeval ping_start_time;
-    gettimeofday(&ping_start_time, NULL);
-
     t_times times;
     memset(&times, 0, sizeof(t_times));
 
@@ -34,10 +30,8 @@ static void send_ping(t_data *data, char *ip)
 
         usleep(PING_SENDING_DELAY * 1000000);
     }
-    struct timeval ping_end_time;
-    gettimeofday(&ping_end_time, NULL);
     
-    print_statistics(n_sequence, n_packet_received, ping_start_time, ping_end_time, ip, &times);
+    print_statistics(n_sequence, n_packet_received, ip, &times);
     free_times(&times);
 }
 

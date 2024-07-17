@@ -24,13 +24,12 @@ void print_header(t_data *data)
     fprintf(stdout, "\n");
 }
 
-void print_statistics(u16 n_sequence, u16 n_packet_received, struct timeval ping_start_time, struct timeval ping_end_time, char *hostname_in, t_times *times)
+void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, t_times *times)
 {
-    double  time_elapsed = calcul_latency(ping_start_time, ping_end_time);
     i32     packet_loss = (int)(((n_sequence - n_packet_received) / (float)n_sequence) * 100);
     
     fprintf(stdout, "--- %s ping statistics ---\n", hostname_in);
-    fprintf(stdout, "%d packets transmitted, %d received, %d%% packet loss, time %.0fms\n", n_sequence, n_packet_received, packet_loss, time_elapsed);
+    fprintf(stdout, "%d packets transmitted, %d packets received, %d%% packet loss\n", n_sequence, n_packet_received, packet_loss);
 
     if (times->arr) {
         double avg, stddev, min, max;
