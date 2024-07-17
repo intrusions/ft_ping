@@ -99,7 +99,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         if (data->flags & FLAG_D)
             print_received_packet(ip_hdr, icmp_hdr, response + 28);
             
-    } while (icmp_hdr->type == 8 && (!strcmp(ip, "192.168.0.16") || !strcmp(ip, "127.0.0.1")));
+    } while (icmp_hdr->type == 8 && (!strcmp(inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), inet_ntoa(*(struct in_addr *)&ip_hdr->daddr))));
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
