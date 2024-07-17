@@ -93,7 +93,7 @@ typedef struct {
 bool reverse_dns(char *ip, char *hostname);
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
 void send_packet(t_data *data, t_packet *packet, struct timeval *start_time, u16 *n_sequence);
-void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times_arr);
+void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times_arr);
 
 
 /* utils */

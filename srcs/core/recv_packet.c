@@ -56,17 +56,34 @@ static i8 verify_packet_integrity(t_data *data, struct iphdr *ip_hdr, struct icm
     return ERR_ICMP_DEFAULT;
 }
 
-void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, char *ip, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times)
+void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times)
 {
     char response[PING_MAX_PKT_SIZE];
     u8 ttl;
-    i32 bytes_received = 0;
-    
-    struct iphdr *ip_hdr;
-    struct icmphdr *icmp_hdr;
+    i32 bytes_received;
     u8 packet_size;
 
+    struct iphdr *ip_hdr;
+    struct icmphdr *icmp_hdr;
+
     memset(response, 0, sizeof(response));
+
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 100000;
+
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(data->sockfd, &readfds);
+
+    int retval = select(data->sockfd + 1, &readfds, NULL, NULL, &tv);
+    if (retval == -1) {
+        fprintf(stderr, "select failed\n");
+        close(data->sockfd);
+        exit(EXIT_FAILURE);
+    } else if (retval == 0) {
+        return ;
+    }
 
     do {
         if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (struct sockaddr *)r_addr, addr_len)) <= 0) {
@@ -74,16 +91,15 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
             close(data->sockfd);
             exit(EXIT_FAILURE);
         }
-            
+        
         ip_hdr = (struct iphdr *)response;
         icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
         packet_size = bytes_received - sizeof(struct iphdr);
 
         if (data->flags & FLAG_D)
             print_received_packet(ip_hdr, icmp_hdr, response + 28);
-        
+            
     } while (icmp_hdr->type == 8 && (!strcmp(ip, "192.168.0.16") || !strcmp(ip, "127.0.0.1")));
-
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
