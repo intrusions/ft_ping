@@ -5,7 +5,7 @@ static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_
     switch (status_code) {
 
         case ERR_ICMP_TIME_EXCEEDED:
-            fprintf(stdout, "%d bytes from %s: Time to Live exceeded (TTL expired)\n", packet_size, ip);
+            fprintf(stdout, "%d bytes from %s: Time to Live exceeded\n", packet_size, ip);
             break;
         
         case ERR_ICMP_NET_UNREACH:
