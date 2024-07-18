@@ -9,7 +9,7 @@ bool manage_flags(i32 ac, char **av, u8 *flags)
             return true;
         } else if (!strcmp(av[index], "-v") || !strcmp(av[index], "--verbose")) {
             *flags |= FLAG_V;
-        } else if (!strcmp(av[index], "--debug")) {
+        } else if (!strcmp(av[index], "-d") || !strcmp(av[index], "--debug")) {
             *flags |= FLAG_D;
         }
     }

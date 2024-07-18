@@ -97,7 +97,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
         packet_size = bytes_received - sizeof(struct iphdr);
 
         if (data->flags & FLAG_D)
-            print_received_packet(ip_hdr, icmp_hdr, response + 28);
+            print_received_packet(ip_hdr, icmp_hdr, response + sizeof(*ip_hdr) + sizeof(*icmp_hdr));
             
     } while (icmp_hdr->type == 8 && (!strcmp(inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), inet_ntoa(*(struct in_addr *)&ip_hdr->daddr))));
 
