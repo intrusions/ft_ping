@@ -68,9 +68,7 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
 
     memset(response, 0, sizeof(response));
 
-    struct timeval tv;
-    tv.tv_sec = 0;
-    tv.tv_usec = 100000;
+    struct timeval tv = {0, 100000};
 
     fd_set readfds;
     FD_ZERO(&readfds);
