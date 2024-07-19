@@ -106,6 +106,7 @@ typedef struct {
 // ========================================================================= //
 
 /* core */
+bool initialization(t_data *data);
 bool reverse_dns(char *ip, char *hostname);
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
 void send_packet(t_data *data, t_packet *packet, timeval *start_time, u16 *n_sequence);

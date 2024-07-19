@@ -25,6 +25,7 @@ CFLAGS_DBG :=                       \
     -fno-optimize-sibling-calls 
 
 SRCS :=                             \
+    core/initialization.c           \
     core/reverse_dns.c              \
     core/prepare_packet.c           \
     core/send_packet.c              \

@@ -35,31 +35,6 @@ static void send_ping(t_data *data, char *ip)
     free_times(&times);
 }
 
-static bool initialization(t_data *data)
-{
-    if ((data->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0) {
-        __log_error("socket error");
-        exit(EXIT_FAILURE);
-    }
-
-    data->pid = getpid();
-    
-    memset(&data->dest, 0, sizeof(data->dest));
-    data->dest.sin_family = AF_INET;
-    
-    if (inet_pton(AF_INET, data->hostname, &data->dest.sin_addr) <= 0) {
-        __log_error("inet_pton error");
-        return true;
-    }
-
-    i32 optval = 1;
-    if (setsockopt(data->sockfd, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) != 0) {
-        __log_error("setsockopt error");
-        return true;
-    }
-    return false;
-}
-
 int main(int ac, char **av)
 {
     t_data data;
