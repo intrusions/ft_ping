@@ -16,7 +16,7 @@ void print_sent_packet(t_packet *packet)
     printf("------------------------------------------------------------------------------\n\n");
 }
 
-void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *payload) {
+void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload) {
     printf("[Packet Received]\n");
     
     printf("[IP Header]\n");
@@ -29,8 +29,8 @@ void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header,
     printf(" |-TTL         : %d\n", ip_header->ttl);
     printf(" |-Protocol    : %d\n", ip_header->protocol);
     printf(" |-Checksum    : %d\n", ntohs(ip_header->check));
-    printf(" |-Source IP   : %s\n", inet_ntoa(*(struct in_addr *)&ip_header->saddr));
-    printf(" |-Dest IP     : %s\n", inet_ntoa(*(struct in_addr *)&ip_header->daddr));
+    printf(" |-Source IP   : %s\n", inet_ntoa(*(in_addr *)&ip_header->saddr));
+    printf(" |-Dest IP     : %s\n", inet_ntoa(*(in_addr *)&ip_header->daddr));
 
     printf("[ICMP Header]\n");
     printf(" |-Type        : %d\n", icmp_header->type);

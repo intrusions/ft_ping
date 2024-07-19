@@ -11,7 +11,7 @@ static void sig_handler(const int signal)
 
 static void send_ping(t_data *data, char *ip)
 {
-    struct sockaddr_in r_addr;
+    sockaddr_in r_addr;
     socklen_t addr_len = sizeof(r_addr);
     u16 n_sequence = 0;
     u16 n_packet_received = 0;
@@ -22,7 +22,7 @@ static void send_ping(t_data *data, char *ip)
     print_header(data);
     while (!SIG_EXIT) {
         t_packet packet;
-        struct timeval start_time, end_time;
+        timeval start_time, end_time;
         
         prepare_packet(data, &packet, n_sequence);
         send_packet(data, &packet, &start_time, &n_sequence);

@@ -58,6 +58,16 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
+typedef struct sockaddr_in  sockaddr_in;
+typedef struct sockaddr     sockaddr;
+typedef struct addrinfo     addrinfo;
+
+typedef struct in_addr      in_addr;
+typedef struct icmphdr      icmphdr;
+typedef struct iphdr        iphdr;
+
+typedef struct timeval      timeval;
+
 
 // ========================================================================= //
 //                                  Structure                                //
@@ -71,12 +81,12 @@ typedef struct {
     char        *hostname_in;
     char        hostname[INET6_ADDRSTRLEN];
 
-    struct sockaddr_in dest;
+    sockaddr_in dest;
 } t_data;
 
 typedef struct {
-    struct icmphdr  hdr;
-    char            payload[PING_PKT_SIZE - sizeof(struct icmphdr)];
+    icmphdr         hdr;
+    char            payload[PING_PKT_SIZE - sizeof(icmphdr)];
 } t_packet;
 
 typedef struct {
@@ -92,20 +102,20 @@ typedef struct {
 /* core */
 bool reverse_dns(char *ip, char *hostname);
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
-void send_packet(t_data *data, t_packet *packet, struct timeval *start_time, u16 *n_sequence);
-void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times);
+void send_packet(t_data *data, t_packet *packet, timeval *start_time, u16 *n_sequence);
+void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times);
 
 
 /* utils */
 void print_man();
 void print_header(t_data *data);
 void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, t_times *times);
-void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr);
+void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr);
 
 bool    manage_flags(i32 ac, char **av, u8 *flags);
 u16     checksum(void *b, int len);
 
-double  calcul_latency(struct timeval start_time, struct timeval end_time);
+double  calcul_latency(timeval start_time, timeval end_time);
 void    calcul_statistics(t_times *times, double *min, double *max, double *avg, double *stddev);
 
 void push_time(t_times *times, double time);
@@ -113,6 +123,6 @@ void free_times(t_times *times);
 
 /* debug */
 void print_sent_packet(t_packet *packet);
-void print_received_packet(struct iphdr *ip_header, struct icmphdr *icmp_header, char *payload);
+void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload);
 
 #endif /* INC_H */

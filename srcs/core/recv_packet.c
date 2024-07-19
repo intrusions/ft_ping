@@ -30,7 +30,7 @@ static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_
     }
 }
 
-static i8 verify_packet_integrity(t_data *data, struct iphdr *ip_hdr, struct icmphdr *icmp_hdr, u16 n_sequence, u8 *ttl)
+static i8 verify_packet_integrity(t_data *data, iphdr *ip_hdr, icmphdr *icmp_hdr, u16 n_sequence, u8 *ttl)
 {
     if (icmp_hdr->type == ICMP_ECHOREPLY &&
         icmp_hdr->un.echo.id == data->pid &&
@@ -56,19 +56,19 @@ static i8 verify_packet_integrity(t_data *data, struct iphdr *ip_hdr, struct icm
     return ERR_ICMP_DEFAULT;
 }
 
-void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, struct timeval *start_time, struct timeval *end_time, t_times *times)
+void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times)
 {
     char response[PING_MAX_PKT_SIZE];
     u8 ttl;
     i32 bytes_received;
     u8 packet_size;
 
-    struct iphdr *ip_hdr;
-    struct icmphdr *icmp_hdr;
+    iphdr *ip_hdr;
+    icmphdr *icmp_hdr;
 
     memset(response, 0, sizeof(response));
 
-    struct timeval tv = {0, 100000};
+    timeval tv = {0, 100000};
 
     fd_set readfds;
     FD_ZERO(&readfds);
@@ -84,30 +84,30 @@ void recv_packet(t_data *data, struct sockaddr_in *r_addr, socklen_t *addr_len, 
     }
 
     do {
-        if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (struct sockaddr *)r_addr, addr_len)) <= 0) {
+        if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (sockaddr *)r_addr, addr_len)) <= 0) {
             fprintf(stderr, "packet receive failed\n");
             close(data->sockfd);
             exit(EXIT_FAILURE);
         }
         
-        ip_hdr = (struct iphdr *)response;
-        icmp_hdr = (struct icmphdr *)(response + (ip_hdr->ihl * 4));
-        packet_size = bytes_received - sizeof(struct iphdr);
+        ip_hdr = (iphdr *)response;
+        icmp_hdr = (icmphdr *)(response + (ip_hdr->ihl * 4));
+        packet_size = bytes_received - sizeof(iphdr);
 
         if (data->flags & FLAG_D)
             print_received_packet(ip_hdr, icmp_hdr, response + sizeof(*ip_hdr) + sizeof(*icmp_hdr));
             
-    } while (icmp_hdr->type == 8 && (!strcmp(inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), inet_ntoa(*(struct in_addr *)&ip_hdr->daddr))));
+    } while (icmp_hdr->type == 8 && (!strcmp(inet_ntoa(*(in_addr *)&ip_hdr->saddr), inet_ntoa(*(in_addr *)&ip_hdr->daddr))));
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
         ++*n_packet_received;
         gettimeofday(end_time, NULL);
         double time_elapsed = calcul_latency(*start_time, *end_time);
-        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", packet_size, inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), n_sequence, ttl, time_elapsed);
+        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n", packet_size, inet_ntoa(*(in_addr *)&ip_hdr->saddr), n_sequence, ttl, time_elapsed);
         push_time(times, time_elapsed);
     } else {
-        print_recv_err(status_code, packet_size, inet_ntoa(*(struct in_addr *)&ip_hdr->saddr), icmp_hdr->code);
+        print_recv_err(status_code, packet_size, inet_ntoa(*(in_addr *)&ip_hdr->saddr), icmp_hdr->code);
         
         if (data->flags & FLAG_V)
             print_verbose_option(ip_hdr, icmp_hdr);

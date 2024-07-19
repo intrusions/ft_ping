@@ -44,14 +44,14 @@ void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, 
 // Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src	Dst	Data
 //  0  0  00 0000 0000   0 0000  00  00 0000 0.0.0.0  0.0.0.0 
 // ICMP: type 0, code 0, size 1, id 0x0800, seq 0x0000
-void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
+void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr)
 {
-    u8 *cp = (u8 *) ip_hdr + sizeof(struct iphdr);
+    u8 *cp = (u8 *) ip_hdr + sizeof(iphdr);
     u8 *ip_header = (u8 *)ip_hdr;
     u64 hlen = ip_hdr->ihl * 4;
 
     printf("IP Hdr Dump:\n");
-    for (u32 i = 0; i < sizeof(struct iphdr); i++) {
+    for (u32 i = 0; i < sizeof(iphdr); i++) {
 
         printf("%02x", ip_header[i]);
         if (i % 2) {
@@ -72,18 +72,18 @@ void print_verbose_option(struct iphdr *ip_hdr, struct icmphdr *icmp_hdr)
                 ip_hdr->ttl,                                    //TTL
                 ip_hdr->protocol,                               //Pro
                 ntohs(ip_hdr->check),                           //cks
-                inet_ntoa(*(struct in_addr *) &ip_hdr->saddr),  //Src
-                inet_ntoa(*(struct in_addr *) &ip_hdr->daddr)); //Dst
+                inet_ntoa(*(in_addr *) &ip_hdr->saddr),  //Src
+                inet_ntoa(*(in_addr *) &ip_hdr->daddr)); //Dst
 
 
-    while (hlen-- > sizeof(struct iphdr))
+    while (hlen-- > sizeof(iphdr))
         printf("%02x", *cp++);                                  //Data
     printf("\n");
 
     printf("ICMP: type %u, code %u, size %lu, id 0x%04x, seq 0x%04x\n",
                 icmp_hdr->type,                                             //Type
                 icmp_hdr->code,                                             //Code
-                ntohs(ip_hdr->tot_len) - (hlen + sizeof(struct iphdr)),     //Size
+                ntohs(ip_hdr->tot_len) - (hlen + sizeof(iphdr)),     //Size
                 ntohs(icmp_hdr->un.echo.id),                                //ID
                 ntohs(icmp_hdr->un.echo.sequence));                         //Sequence
 }
