@@ -12,7 +12,7 @@ bool    reverse_dns(char *hostname_in, char *hostname)
     i32 status;
     if ((status = getaddrinfo(hostname_in, NULL, &hints, &addr_info)) != 0) {
         __log_error("getaddrinfo error");
-        return true;
+        return false;
     }
 
     for (ptr = addr_info; ptr; ptr = ptr->ai_next) {
@@ -27,5 +27,5 @@ bool    reverse_dns(char *hostname_in, char *hostname)
     }
 
     freeaddrinfo(addr_info);
-    return false;
+    return true;
 }

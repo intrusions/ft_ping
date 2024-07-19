@@ -3,14 +3,14 @@
 static bool open_sockfd(t_data *data)
 {
     data->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
-    return (data->sockfd < 0)
+    return (!(data->sockfd < 0));
 }
 
 bool initialization(t_data *data)
 {
-    if (open_sockfd(data)) {
+    if (!open_sockfd(data)) {
         __log_error("socket error");
-        return true;
+        return false;
     }
 
     data->pid = getpid();
@@ -20,13 +20,13 @@ bool initialization(t_data *data)
     
     if (inet_pton(AF_INET, data->hostname, &data->dest.sin_addr) <= 0) {
         __log_error("inet_pton error");
-        return true;
+        return false;
     }
 
     i32 optval = 1;
     if (setsockopt(data->sockfd, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) != 0) {
         __log_error("setsockopt error");
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }

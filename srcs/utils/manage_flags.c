@@ -6,12 +6,12 @@ bool manage_flags(i32 ac, char **av, u8 *flags)
         
         if (!strcmp(av[index], "-?") || !strcmp(av[index], "-h") || !strcmp(av[index], "--help")) {
             print_man();
-            return true;
+            return false;
         } else if (!strcmp(av[index], "-v") || !strcmp(av[index], "--verbose")) {
             *flags |= FLAG_V;
         } else if (!strcmp(av[index], "-d") || !strcmp(av[index], "--debug")) {
             *flags |= FLAG_D;
         }
     }
-    return false;
+    return true;
 }
