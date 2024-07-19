@@ -11,7 +11,7 @@ bool    reverse_dns(char *hostname_in, char *hostname)
 
     i32 status;
     if ((status = getaddrinfo(hostname_in, NULL, &hints, &addr_info)) != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+        __log_error("getaddrinfo error");
         return true;
     }
 

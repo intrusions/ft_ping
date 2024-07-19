@@ -34,4 +34,5 @@ SRCS :=                             \
     utils/checksum.c                \
     utils/calcul.c                  \
     utils/arr.c                     \
+    utils/close.c                   \
     debug/debug_print.c

@@ -76,18 +76,16 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
 
     int retval = select(data->sockfd + 1, &readfds, NULL, NULL, &tv);
     if (retval == -1) {
-        fprintf(stderr, "select failed\n");
-        close(data->sockfd);
-        exit(EXIT_FAILURE);
+        __log_error("select failed");
+        close_sockfd_and_exit(data);
     } else if (retval == 0) {
         return ;
     }
 
     do {
         if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (sockaddr *)r_addr, addr_len)) <= 0) {
-            fprintf(stderr, "packet receive failed\n");
-            close(data->sockfd);
-            exit(EXIT_FAILURE);
+            __log_error("recvfrom error");
+            close_sockfd_and_exit(data);
         }
         
         ip_hdr = (iphdr *)response;

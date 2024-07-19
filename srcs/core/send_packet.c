@@ -4,9 +4,8 @@ void send_packet(t_data *data, t_packet *packet, timeval *start_time, u16 *n_seq
 {
     gettimeofday(start_time, NULL);
     if (sendto(data->sockfd, packet, sizeof(*packet), 0, (sockaddr *)&data->dest, sizeof(data->dest)) <= 0) {
-        fprintf(stdout, "packet send failed\n");
-        close(data->sockfd);
-        exit(EXIT_FAILURE);
+        __log_error("sendto error");
+        close_sockfd_and_exit(data);
     }
     ++*n_sequence;
 }
