@@ -72,8 +72,8 @@ void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr)
                 ip_hdr->ttl,                                    //TTL
                 ip_hdr->protocol,                               //Pro
                 ntohs(ip_hdr->check),                           //cks
-                inet_ntoa(*(in_addr *) &ip_hdr->saddr),  //Src
-                inet_ntoa(*(in_addr *) &ip_hdr->daddr)); //Dst
+                IP_STR(ip_hdr->saddr),                          //Src
+                IP_STR(ip_hdr->daddr));                         //Dst
 
 
     while (hlen-- > sizeof(iphdr))
@@ -83,7 +83,7 @@ void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr)
     printf("ICMP: type %u, code %u, size %lu, id 0x%04x, seq 0x%04x\n",
                 icmp_hdr->type,                                             //Type
                 icmp_hdr->code,                                             //Code
-                ntohs(ip_hdr->tot_len) - (hlen + sizeof(iphdr)),     //Size
+                ntohs(ip_hdr->tot_len) - (hlen + sizeof(iphdr)),            //Size
                 ntohs(icmp_hdr->un.echo.id),                                //ID
                 ntohs(icmp_hdr->un.echo.sequence));                         //Sequence
 }

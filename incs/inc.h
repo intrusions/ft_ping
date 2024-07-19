@@ -43,6 +43,12 @@
 #define ERR_ICMP_PROT_UNREACH   -5
 #define ERR_ICMP_PORT_UNREACH   -6
 
+// ========================================================================= //
+//                                   Macro                                   //
+// ========================================================================= //
+
+#define IP_STR(addr) inet_ntoa(*(in_addr *)&(addr))
+
 
 // ========================================================================= //
 //                                  Typedef                                  //
@@ -61,11 +67,9 @@ typedef int64_t i64;
 typedef struct sockaddr_in  sockaddr_in;
 typedef struct sockaddr     sockaddr;
 typedef struct addrinfo     addrinfo;
-
 typedef struct in_addr      in_addr;
 typedef struct icmphdr      icmphdr;
 typedef struct iphdr        iphdr;
-
 typedef struct timeval      timeval;
 
 
@@ -105,24 +109,21 @@ void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
 void send_packet(t_data *data, t_packet *packet, timeval *start_time, u16 *n_sequence);
 void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times);
 
-
 /* utils */
 void print_man();
 void print_header(t_data *data);
 void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, t_times *times);
 void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr);
-
-bool    manage_flags(i32 ac, char **av, u8 *flags);
-u16     checksum(void *b, int len);
-
-double  calcul_latency(timeval start_time, timeval end_time);
-void    calcul_statistics(t_times *times, double *min, double *max, double *avg, double *stddev);
-
+bool manage_flags(i32 ac, char **av, u8 *flags);
+u16 checksum(void *b, int len);
+double calcul_latency(timeval start_time, timeval end_time);
+void calcul_statistics(t_times *times, double *min, double *max, double *avg, double *stddev);
 void push_time(t_times *times, double time);
 void free_times(t_times *times);
 
 /* debug */
 void print_sent_packet(t_packet *packet);
 void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload);
+
 
 #endif /* INC_H */
