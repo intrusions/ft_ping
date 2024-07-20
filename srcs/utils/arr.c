@@ -1,6 +1,6 @@
 #include "inc.h"
 
-void push_time(t_times *times, double time)
+void realloc_push_time(t_times *times, double time)
 {
     times->arr = (double *)realloc(times->arr, (times->size + 1) * sizeof(double));
     times->arr[times->size++] = time;

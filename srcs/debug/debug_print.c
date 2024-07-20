@@ -29,8 +29,8 @@ void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload
     printf(" |-TTL         : %d\n", ip_header->ttl);
     printf(" |-Protocol    : %d\n", ip_header->protocol);
     printf(" |-Checksum    : %d\n", ntohs(ip_header->check));
-    printf(" |-Source IP   : %s\n", IP_STR(ip_header->saddr));
-    printf(" |-Dest IP     : %s\n", IP_STR(ip_header->daddr));
+    printf(" |-Source IP   : %s\n", __ip_str(ip_header->saddr));
+    printf(" |-Dest IP     : %s\n", __ip_str(ip_header->daddr));
 
     printf("[ICMP Header]\n");
     printf(" |-Type        : %d\n", icmp_header->type);

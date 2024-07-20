@@ -48,7 +48,7 @@
 //                                   Macro                                   //
 // ========================================================================= //
 
-#define IP_STR(addr) inet_ntoa(*(in_addr *)&(addr))
+#define __ip_str(addr) inet_ntoa(*(in_addr *)&(addr))
 #define __log_error(error) (void)fprintf(stderr, "%s: %s\n", error, strerror(errno))
 
 
@@ -121,7 +121,7 @@ bool manage_flags(i32 ac, char **av, u8 *flags);
 u16 checksum(void *b, int len);
 double calcul_latency(timeval start_time, timeval end_time);
 void calcul_statistics(t_times *times, double *min, double *max, double *avg, double *stddev);
-void push_time(t_times *times, double time);
+void realloc_push_time(t_times *times, double time);
 void free_times(t_times *times);
 void close_sockfd_and_exit(t_data *data);
 

@@ -21,7 +21,11 @@ bool    reverse_dns(char *hostname_in, char *hostname)
         if (ptr->ai_family == AF_INET) {
             sockaddr_in *ipv4 = (sockaddr_in *)ptr->ai_addr;
             addr = &(ipv4->sin_addr);
-            inet_ntop(ptr->ai_family, addr, hostname, INET6_ADDRSTRLEN);
+
+            if (!inet_ntop(ptr->ai_family, addr, hostname, INET6_ADDRSTRLEN)) {
+                __log_error("inet_ntop error");
+                return false;
+            }
             break ;
         }
     }

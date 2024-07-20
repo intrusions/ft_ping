@@ -72,8 +72,8 @@ void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr)
                 ip_hdr->ttl,                                    //TTL
                 ip_hdr->protocol,                               //Pro
                 ntohs(ip_hdr->check),                           //cks
-                IP_STR(ip_hdr->saddr),                          //Src
-                IP_STR(ip_hdr->daddr));                         //Dst
+                __ip_str(ip_hdr->saddr),                        //Src
+                __ip_str(ip_hdr->daddr));                       //Dst
 
 
     while (hlen-- > sizeof(iphdr))

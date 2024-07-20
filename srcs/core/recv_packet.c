@@ -95,7 +95,7 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
         if (data->flags & FLAG_D)
             print_received_packet(ip_hdr, icmp_hdr, response + sizeof(*ip_hdr) + sizeof(*icmp_hdr));
             
-    } while (icmp_hdr->type == 8 && (!strcmp(IP_STR(ip_hdr->saddr), IP_STR(ip_hdr->daddr))));
+    } while (icmp_hdr->type == 8 && (!strcmp(__ip_str(ip_hdr->saddr), __ip_str(ip_hdr->daddr))));
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
@@ -105,14 +105,14 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
         
         fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
                         packet_size,
-                        IP_STR(ip_hdr->saddr),
+                        __ip_str(ip_hdr->saddr),
                         n_sequence,
                         ttl,
                         time_elapsed);
         
-        push_time(times, time_elapsed);
+        realloc_push_time(times, time_elapsed);
     } else {
-        print_recv_err(status_code, packet_size, IP_STR(ip_hdr->saddr), icmp_hdr->code);
+        print_recv_err(status_code, packet_size, __ip_str(ip_hdr->saddr), icmp_hdr->code);
         
         if (data->flags & FLAG_V)
             print_verbose_option(ip_hdr, icmp_hdr);
