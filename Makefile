@@ -17,15 +17,26 @@ all: $(NAME)
 -include  $(SRCS_OBJS:.o=.d)
 
 $(NAME): $(SRCS_OBJS)
-	@$(CC) \
-		$^ \
-		$(MAIN) \
-		$(CFLAGS) \
-		-o $(NAME) \
+	@$(CC)				\
+		$^				\
+		$(MAIN)			\
+		$(CFLAGS)		\
+		-o $(NAME)		\
 		-I $(INCS_DIR)
 
 g: CFLAGS += $(CFLAGS_DBG)
 g: all
+
+sparse:
+	find . -name "*.c"			\
+		-not -path ""			\
+		-type f					\
+		-exec					\
+			sparse				\
+				-Wno-decl		\
+				-Wsparse-error	\
+				-I $(INCS_DIR) 	\
+				-style=file -i {} \; 
 
 clean:
 	rm -rf *.dSYM

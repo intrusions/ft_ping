@@ -80,19 +80,19 @@ typedef struct timeval      timeval;
 // ========================================================================= //
 
 typedef struct {
-    i32         sockfd;
-    u16         pid;
-    u8          flags;
+    i32 sockfd;
+    u16 pid;
+    u8  flags;
     
-    char        *hostname_in;
-    char        hostname[INET6_ADDRSTRLEN];
+    char    *hostname_in;
+    char    hostname[INET6_ADDRSTRLEN];
 
     sockaddr_in dest;
 } t_data;
 
 typedef struct {
-    icmphdr         hdr;
-    char            payload[PING_PKT_SIZE - sizeof(icmphdr)];
+    icmphdr hdr;
+    char    payload[PING_PKT_SIZE - sizeof(icmphdr)];
 } t_packet;
 
 typedef struct {
@@ -108,26 +108,36 @@ typedef struct {
 /* core */
 bool initialization(t_data *data);
 bool reverse_dns(char *ip, char *hostname);
+
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
-void send_packet(t_data *data, t_packet *packet, timeval *start_time, u16 *n_sequence);
-void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times);
+void send_packet(t_data *data, t_packet *packet, timeval *start_time,
+                    u16 *n_sequence);
+void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len,
+                    u16 n_sequence, u16 *n_packet_received, timeval *start_time,
+                    timeval *end_time, t_times *times);
 
 /* utils */
-void print_man();
+void print_man(void);
 void print_header(t_data *data);
-void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, t_times *times);
+void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in,
+                        t_times *times);
 void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr);
+
 bool manage_flags(i32 ac, char **av, u8 *flags);
 u16 checksum(void *b, int len);
+
 double calcul_latency(timeval start_time, timeval end_time);
-void calcul_statistics(t_times *times, double *min, double *max, double *avg, double *stddev);
+void calcul_statistics(t_times *times, double *min, double *max,
+                        double *avg, double *stddev);
+
 void realloc_push_time(t_times *times, double time);
 void free_times(t_times *times);
 void close_sockfd_and_exit(t_data *data);
 
 /* debug */
 void print_sent_packet(t_packet *packet);
-void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload);
+void print_received_packet(iphdr *ip_header, icmphdr *icmp_header,
+                            char *payload);
 
 
 #endif /* INC_H */

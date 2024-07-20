@@ -5,27 +5,33 @@ static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_
     switch (status_code) {
 
         case ERR_ICMP_TIME_EXCEEDED:
-            fprintf(stdout, "%d bytes from %s: Time to Live exceeded\n", packet_size, ip);
+            fprintf(stdout, "%d bytes from %s: Time to Live exceeded\n",
+                        packet_size, ip);
             break;
         
         case ERR_ICMP_NET_UNREACH:
-            fprintf(stdout, "%d bytes from %s: Destination Net Unreachable\n", packet_size, ip);
+            fprintf(stdout, "%d bytes from %s: Destination Net Unreachable\n",
+                        packet_size, ip);
             break;
         
         case ERR_ICMP_HOST_UNREACH:
-            fprintf(stdout, "%d bytes from %s: Destination Host Unreachable\n", packet_size, ip);
+            fprintf(stdout, "%d bytes from %s: Destination Host Unreachable\n",
+                        packet_size, ip);
             break;
         
         case ERR_ICMP_PROT_UNREACH:
-            fprintf(stdout, "%d bytes from %s: Destination Protocol Unreachable\n", packet_size, ip);
+            fprintf(stdout, "%d bytes from %s: Destination Protocol Unreachable\n",
+                        packet_size, ip);
             break;
         
         case ERR_ICMP_PORT_UNREACH:
-            fprintf(stdout, "%d bytes from %s: Destination Port Unreachable\n", packet_size, ip);
+            fprintf(stdout, "%d bytes from %s: Destination Port Unreachable\n",
+                        packet_size, ip);
             break;
         
         default:
-            fprintf(stdout, "%d bytes from %s: Destination Unreachable, code=%d\n", packet_size, ip, icmphdr_code);
+            fprintf(stdout, "%d bytes from %s: Destination Unreachable, code=%d\n",
+                        packet_size, ip, icmphdr_code);
             break;
     }
 }
@@ -56,7 +62,8 @@ static i8 verify_packet_integrity(t_data *data, iphdr *ip_hdr, icmphdr *icmp_hdr
     return ERR_ICMP_DEFAULT;
 }
 
-void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence, u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times)
+void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence,
+                    u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times)
 {
     char response[PING_MAX_PKT_SIZE];
     u8 ttl;
@@ -78,7 +85,7 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
     if (retval == -1) {
         __log_error("select failed");
         close_sockfd_and_exit(data);
-    } else if (retval == 0) {
+    } else if (!retval) {
         return ;
     }
 
@@ -104,11 +111,8 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
         double time_elapsed = calcul_latency(*start_time, *end_time);
         
         fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
-                        packet_size,
-                        __ip_str(ip_hdr->saddr),
-                        n_sequence,
-                        ttl,
-                        time_elapsed);
+                    packet_size, __ip_str(ip_hdr->saddr), n_sequence,
+                    ttl, time_elapsed);
         
         realloc_push_time(times, time_elapsed);
     } else {

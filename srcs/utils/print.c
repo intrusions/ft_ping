@@ -1,6 +1,6 @@
 #include "inc.h"
 
-void print_man()
+void print_man(void)
 {
     printf(
         "\n"
@@ -26,16 +26,18 @@ void print_header(t_data *data)
 
 void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, t_times *times)
 {
-    i32     packet_loss = (int)(((n_sequence - n_packet_received) / (float)n_sequence) * 100);
+    i32 packet_loss = (i32)(((n_sequence - n_packet_received) / (float)n_sequence) * 100);
     
     fprintf(stdout, "--- %s ping statistics ---\n", hostname_in);
-    fprintf(stdout, "%d packets transmitted, %d packets received, %d%% packet loss\n", n_sequence, n_packet_received, packet_loss);
+    fprintf(stdout, "%d packets transmitted, %d packets received, %d%% packet loss\n",
+                n_sequence, n_packet_received, packet_loss);
 
     if (times->arr) {
         double avg, stddev, min, max;
         
         calcul_statistics(times, &min, &max, &avg, &stddev);
-        fprintf(stdout, "round-trip min/avg/max/stddev = %.3f/%.3f/%.3f/%.3f ms\n", min, avg, max, stddev);
+        fprintf(stdout, "round-trip min/avg/max/stddev = %.3f/%.3f/%.3f/%.3f ms\n",
+                    min, avg, max, stddev);
     }
 }
 
