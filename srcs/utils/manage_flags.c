@@ -51,7 +51,9 @@ bool manage_flags(t_data *data, i32 ac, char **av)
             data->flags |= FLAG_D;
         } else if (!strcmp(av[index], "-q")) {
             data->flags |= FLAG_Q;
-        } else if (!strcmp(av[index], "-i") && !set_option_value(data, index, ac, av, FLAG_I)) {
+        } else if (!strcmp(av[index], "-f")) {
+            data->flags |= FLAG_F;
+        }  else if (!strcmp(av[index], "-i") && !set_option_value(data, index, ac, av, FLAG_I)) {
             return false;
         } else if (!strcmp(av[index], "-c") && !set_option_value(data, index, ac, av, FLAG_C)) {
             return false;

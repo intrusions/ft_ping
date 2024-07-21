@@ -34,8 +34,9 @@
 #define FLAG_D 0x01 << 1    // debug mode
 #define FLAG_Q 0x01 << 2    // quiet mode
 #define FLAG_C 0x01 << 3    // count mode
-#define FLAG_I 0x01 << 4    // modify delay
-#define FLAG_P 0x01 << 5    // modify payload
+#define FLAG_F 0x01 << 4    // flood mode
+#define FLAG_I 0x01 << 5    // modify delay
+#define FLAG_P 0x01 << 6    // modify payload
 
 #define PING_SENDING_DELAY 1
 #define PING_MAX_PKT_SIZE 84

@@ -31,7 +31,9 @@ static void send_ping(t_data *data)
         send_packet(data, &packet, &start_time, &n_sequence);
         recv_packet(data, &r_addr, n_sequence, &n_packet_received, &start_time, &end_time, &times);
 
-        usleep(data->option.option_delay_value * 1000000);
+        if (!(data->flags & FLAG_F))
+            usleep(data->option.option_delay_value * 1000000);
+    
     }
     
     print_statistics(n_sequence, n_packet_received, data->addr_in, &times);

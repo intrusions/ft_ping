@@ -88,7 +88,7 @@ static void perform_valid_packet(t_data *data, u16 *n_packet_received, timeval *
         double time_elapsed = calcul_latency(*start_time, *end_time);
         
 
-        if (!(data->flags & FLAG_Q)) {
+        if (!(data->flags & FLAG_Q) && !(data->flags & FLAG_F) ) {
             fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
                                 packet_size, ip, n_sequence,
                                 ttl, time_elapsed);
