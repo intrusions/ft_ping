@@ -15,11 +15,12 @@ static void send_ping(t_data *data)
     t_times times;
     u16 n_sequence = 0;
     u16 n_packet_received = 0;
+    u16 n = 0;
     
     memset(&times, 0, sizeof(t_times));
 
     print_header(data);
-    while (!SIG_EXIT) {
+    while (!SIG_EXIT && n++ < data->option.option_count_value) {
         t_packet packet;
         timeval start_time, end_time;
         

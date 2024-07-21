@@ -33,7 +33,8 @@
 #define FLAG_V 0x01 << 0    // verbose mode
 #define FLAG_D 0x01 << 1    // debug mode
 #define FLAG_Q 0x01 << 2    // quiet mode
-#define FLAG_I 0x01 << 3    // modify delay
+#define FLAG_C 0x01 << 3    // count mode
+#define FLAG_I 0x01 << 4    // modify delay
 
 #define PING_SENDING_DELAY 1
 #define PING_MAX_PKT_SIZE 84
@@ -84,6 +85,7 @@ typedef struct timeval      timeval;
 
 typedef struct {
     u32 option_delay_value;
+    u32 option_count_value;
 }   t_options;
 
 typedef struct {

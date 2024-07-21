@@ -19,6 +19,8 @@ static bool set_option_value(t_data *data, i32 index, i32 ac, char **av, u8 flag
 
     if (!strcmp(av[index - 1], "-i")) {
         data->option.option_delay_value = atoi(av[index]);
+    } else if (!strcmp(av[index - 1], "-c")) {
+        data->option.option_count_value = atoi(av[index]);
     }
     
     return true;
@@ -38,6 +40,8 @@ bool manage_flags(t_data *data, i32 ac, char **av)
         } else if (!strcmp(av[index], "-q")) {
             data->flags |= FLAG_Q;
         } else if (!strcmp(av[index], "-i") && !set_option_value(data, index, ac, av, FLAG_I)) {
+            return false;
+        } else if (!strcmp(av[index], "-c") && !set_option_value(data, index, ac, av, FLAG_C)) {
             return false;
         }
     }
