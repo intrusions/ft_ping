@@ -7,20 +7,32 @@ static bool set_option_value(t_data *data, i32 index, i32 ac, char **av, u8 flag
         return false;
     }
 
-    u8 len = strlen(av[++index]);
-    for (u8 i = 0; i < len; i++) {
-        if (!isdigit(av[index][i])) {
-            fprintf(stderr, "ping: invalid value (`%s')\n", av[index]);
-            return false;
+    if (flag & FLAG_P) {
+
+        if (strlen(av[index + 1]) < PING_MAX_PATTERN_SIZE) {
+            strncpy(data->option.option_pattern_value, av[index + 1], strlen(av[index + 1]));
+        } else {
+            strncpy(data->option.option_pattern_value, av[index + 1], 16);
         }
-    }
+        data->flags |= flag;
+        return true;
+    } else {
 
-    data->flags |= flag;
+        u8 len = strlen(av[++index]);
+        for (u8 i = 0; i < len; i++) {
+            if (!isdigit(av[index][i])) {
+                fprintf(stderr, "ping: invalid value (`%s')\n", av[index]);
+                return false;
+            }
+        }
 
-    if (!strcmp(av[index - 1], "-i")) {
-        data->option.option_delay_value = atoi(av[index]);
-    } else if (!strcmp(av[index - 1], "-c")) {
-        data->option.option_count_value = atoi(av[index]);
+        data->flags |= flag;
+
+        if (!strcmp(av[index - 1], "-i")) {
+            data->option.option_delay_value = atoi(av[index]);
+        } else if (!strcmp(av[index - 1], "-c")) {
+            data->option.option_count_value = atoi(av[index]);
+        }
     }
     
     return true;
@@ -42,6 +54,8 @@ bool manage_flags(t_data *data, i32 ac, char **av)
         } else if (!strcmp(av[index], "-i") && !set_option_value(data, index, ac, av, FLAG_I)) {
             return false;
         } else if (!strcmp(av[index], "-c") && !set_option_value(data, index, ac, av, FLAG_C)) {
+            return false;
+        } else if (!strcmp(av[index], "-p") && !set_option_value(data, index, ac, av, FLAG_P)) {
             return false;
         }
     }

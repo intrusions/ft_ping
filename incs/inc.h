@@ -35,10 +35,12 @@
 #define FLAG_Q 0x01 << 2    // quiet mode
 #define FLAG_C 0x01 << 3    // count mode
 #define FLAG_I 0x01 << 4    // modify delay
+#define FLAG_P 0x01 << 5    // modify payload
 
 #define PING_SENDING_DELAY 1
 #define PING_MAX_PKT_SIZE 84
 #define PING_PKT_SIZE 64
+#define PING_MAX_PATTERN_SIZE 16
 
 #define ICMP_PACKET_SUCCESS     0
 #define ERR_ICMP_DEFAULT        -1
@@ -84,8 +86,9 @@ typedef struct timeval      timeval;
 // ========================================================================= //
 
 typedef struct {
-    u32 option_delay_value;
-    u32 option_count_value;
+    u32     option_delay_value;
+    u32     option_count_value;
+    char    option_pattern_value[PING_MAX_PATTERN_SIZE];
 }   t_options;
 
 typedef struct {
