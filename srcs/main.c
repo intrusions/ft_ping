@@ -27,7 +27,7 @@ static void send_ping(t_data *data)
         send_packet(data, &packet, &start_time, &n_sequence);
         recv_packet(data, &r_addr, n_sequence, &n_packet_received, &start_time, &end_time, &times);
 
-        usleep(PING_SENDING_DELAY * 1000000);
+        usleep(data->option.option_delay_value * 1000000);
     }
     
     print_statistics(n_sequence, n_packet_received, data->addr_in, &times);
@@ -39,6 +39,7 @@ int main(int ac, char **av)
     t_data data;
     memset(&data, 0, sizeof(data));
     data.addr_in = av[ac - 1];
+    data.option.option_delay_value = 1;
 
     av++, ac--;
 
@@ -47,10 +48,7 @@ int main(int ac, char **av)
         return EXIT_FAILURE;
     }
 
-    if (!manage_flags(ac, av, &data.flags))
-        return EXIT_SUCCESS;
-    
-    if (!reverse_dns(data.addr_in, data.addr))
+    if (!manage_flags(&data, ac, av) || !reverse_dns(data.addr_in, data.addr))
         return EXIT_FAILURE;
     
     if (!initialization(&data))

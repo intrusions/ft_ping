@@ -23,15 +23,17 @@
 #include <arpa/inet.h>
 #include <math.h>
 #include <errno.h>
+#include <ctype.h>
 
 
 // ========================================================================= //
 //                                   Define                                  //
 // ========================================================================= //
 
-#define FLAG_V 0x01 << 0
-#define FLAG_D 0x01 << 1
-#define FLAG_Q 0x01 << 2
+#define FLAG_V 0x01 << 0    // verbose mode
+#define FLAG_D 0x01 << 1    // debug mode
+#define FLAG_Q 0x01 << 2    // quiet mode
+#define FLAG_I 0x01 << 3    // modify delay
 
 #define PING_SENDING_DELAY 1
 #define PING_MAX_PKT_SIZE 84
@@ -81,6 +83,10 @@ typedef struct timeval      timeval;
 // ========================================================================= //
 
 typedef struct {
+    u32 option_delay_value;
+}   t_options;
+
+typedef struct {
     i32 sockfd;
     u16 pid;
     u8  flags;
@@ -88,6 +94,7 @@ typedef struct {
     char    *addr_in;
     char    addr[INET6_ADDRSTRLEN];
 
+    t_options   option;      
     sockaddr_in dest;
 } t_data;
 
@@ -124,7 +131,7 @@ void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in,
                         t_times *times);
 void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr);
 
-bool manage_flags(i32 ac, char **av, u8 *flags);
+bool manage_flags(t_data *data, i32 ac, char **av);
 u16 checksum(void *b, int len);
 
 double calcul_latency(timeval start_time, timeval end_time);
