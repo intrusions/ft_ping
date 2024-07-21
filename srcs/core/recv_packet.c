@@ -88,11 +88,8 @@ static void perform_valid_packet(u16 *n_packet_received, timeval *start_time, ti
         double time_elapsed = calcul_latency(*start_time, *end_time);
         
         fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
-                            packet_size,
-                            ip,
-                            n_sequence,
-                            ttl,
-                            time_elapsed);
+                            packet_size, ip, n_sequence,
+                            ttl, time_elapsed);
                 
         realloc_push_time(times, time_elapsed);
 }
@@ -104,7 +101,7 @@ static void perform_invalid_packet(t_data *data, i8 status_code, u8 packet_size,
 
     if (!ip_to_hostname(__ip_str(ip_hdr->saddr), hostname_response_sender))
         close_sockfd_and_exit(data);
-        
+
     print_recv_err(status_code, packet_size, hostname_response_sender, icmp_hdr->code);
     
     if (data->flags & FLAG_V)
@@ -114,10 +111,10 @@ static void perform_invalid_packet(t_data *data, i8 status_code, u8 packet_size,
 void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence,
                     u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times)
 {
-    char response[PING_MAX_PKT_SIZE];
     u8 ttl;
-    i32 bytes_received;
     u8 packet_size;
+    i32 bytes_received;
+    char response[PING_MAX_PKT_SIZE];
 
     iphdr *ip_hdr;
     icmphdr *icmp_hdr;
@@ -138,7 +135,7 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
         packet_size = bytes_received - sizeof(iphdr);
 
         if (data->flags & FLAG_D)
-            print_received_packet(ip_hdr, icmp_hdr, response + sizeof(*ip_hdr) + sizeof(*icmp_hdr));
+            print_received_packet(ip_hdr, icmp_hdr, response);
             
     } while (icmp_hdr->type == 8 && (!strcmp(__ip_str(ip_hdr->saddr), __ip_str(ip_hdr->daddr))));
 

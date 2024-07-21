@@ -139,7 +139,7 @@ bool ip_to_hostname(const char *ip, char *res);
 /* debug */
 void print_sent_packet(t_packet *packet);
 void print_received_packet(iphdr *ip_header, icmphdr *icmp_header,
-                            char *payload);
+                            char *response);
 
 
 #endif /* INC_H */

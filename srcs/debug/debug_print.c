@@ -16,7 +16,7 @@ void print_sent_packet(t_packet *packet)
     printf("------------------------------------------------------------------------------\n\n");
 }
 
-void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload) {
+void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *response) {
     printf("[Packet Received]\n");
     
     printf("[IP Header]\n");
@@ -40,7 +40,7 @@ void print_received_packet(iphdr *ip_header, icmphdr *icmp_header, char *payload
     printf(" |-Sequence    : %d\n", icmp_header->un.echo.sequence);
 
     printf("[Message Data]\n");
-    printf(" |-Size        : %lu bytes\n", strlen(payload) + 1);
-    printf(" |-Content     : %s\n", payload);
+    printf(" |-Size        : %lu bytes\n", strlen(response + sizeof(*ip_header) + sizeof(*icmp_header)) + 1);
+    printf(" |-Content     : %s\n", response + sizeof(*ip_header) + sizeof(*icmp_header));
     printf("------------------------------------------------------------------------------\n\n");
 }

@@ -47,4 +47,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY	: all clean g sparse fclean re 
+.PHONY	: all clean g sparse fclean re
