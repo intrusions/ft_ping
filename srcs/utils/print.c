@@ -18,9 +18,8 @@ void print_header(t_data *data)
 {
     fprintf(stdout, "PING %s (%s): 56 data bytes", data->hostname_in, data->hostname);
 
-    if (data->flags & FLAG_V) {
+    if (data->flags & FLAG_V)
         fprintf(stdout, ", id 0x%04x = %d", data->pid, data->pid);
-    }
     fprintf(stdout, "\n");
 }
 
@@ -56,9 +55,8 @@ void print_verbose_option(iphdr *ip_hdr, icmphdr *icmp_hdr)
     for (u32 i = 0; i < sizeof(iphdr); i++) {
 
         printf("%02x", ip_header[i]);
-        if (i % 2) {
+        if (i % 2)
             printf(" ");
-        }
     }
     printf("\n");
 

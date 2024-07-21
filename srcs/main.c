@@ -47,15 +47,15 @@ int main(int ac, char **av)
         fprintf(stderr, "ping: usage error: Destination address required\n");
         return EXIT_FAILURE;
     }
-    if (!manage_flags(ac, av, &data.flags)) {
+
+    if (!manage_flags(ac, av, &data.flags))
         return EXIT_SUCCESS;
-    }
-    if (!reverse_dns(data.hostname_in, data.hostname)) {
+    
+    if (!reverse_dns(data.hostname_in, data.hostname))
         return EXIT_FAILURE;
-    }
-    if (!initialization(&data)) {
+    
+    if (!initialization(&data))
         close_sockfd_and_exit(&data);
-    }
 
     signal(SIGINT, sig_handler);
     send_ping(&data, av[ac - 1]);

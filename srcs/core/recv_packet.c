@@ -102,9 +102,9 @@ static void perform_invalid_packet(t_data *data, i8 status_code, u8 packet_size,
 {
     char hostname_response_sender[NI_MAXHOST];
 
-    if (!ip_to_hostname(__ip_str(ip_hdr->saddr), hostname_response_sender)) {
+    if (!ip_to_hostname(__ip_str(ip_hdr->saddr), hostname_response_sender))
         close_sockfd_and_exit(data);
-    }
+        
     print_recv_err(status_code, packet_size, hostname_response_sender, icmp_hdr->code);
     
     if (data->flags & FLAG_V)
