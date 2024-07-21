@@ -20,9 +20,12 @@ static void send_ping(t_data *data)
     memset(&times, 0, sizeof(t_times));
 
     print_header(data);
-    while (!SIG_EXIT && n++ < data->option.option_count_value) {
+    while (!SIG_EXIT) {
         t_packet packet;
         timeval start_time, end_time;
+        
+        if (data->flags & FLAG_C && n++ == data->option.option_count_value)
+            break ;
         
         prepare_packet(data, &packet, n_sequence);
         send_packet(data, &packet, &start_time, &n_sequence);
