@@ -134,6 +134,8 @@ void realloc_push_time(t_times *times, double time);
 void free_times(t_times *times);
 void close_sockfd_and_exit(t_data *data);
 
+bool ip_to_hostname(const char *ip, char *res);
+
 /* debug */
 void print_sent_packet(t_packet *packet);
 void print_received_packet(iphdr *ip_header, icmphdr *icmp_header,

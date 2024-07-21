@@ -1,27 +1,5 @@
 #include "inc.h"
 
-static bool ip_to_hostname(const char *ip, char *result_str)
-{
-    sockaddr_in sa;
-    char host[NI_MAXHOST];
-
-    memset(&sa, 0, sizeof(sa));
-    sa.sin_family = AF_INET;
-
-    if (inet_pton(AF_INET, ip, &(sa.sin_addr)) <= 0) {
-        __log_error("inet_pton error");
-        return false;
-    }
-
-    if (getnameinfo((sockaddr*)&sa, sizeof(sa), host, sizeof(host), NULL, 0, 0)) {
-        __log_error("getnameinfo error");
-        return false;
-    }
-
-    strcpy(result_str, host);
-    return true;
-}
-
 static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
 {   
     switch (status_code) {
@@ -84,6 +62,55 @@ static i8 verify_packet_integrity(t_data *data, iphdr *ip_hdr, icmphdr *icmp_hdr
     return ERR_ICMP_DEFAULT;
 }
 
+static bool wait_response(t_data *data)
+{
+    timeval tv = {0, 100000};
+
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(data->sockfd, &readfds);
+
+    i32 retval = select(data->sockfd + 1, &readfds, NULL, NULL, &tv);
+    if (retval == -1) {
+        __log_error("select failed");
+        close_sockfd_and_exit(data);
+    } else if (!retval) {
+        return false;
+    }
+    return true;
+}
+
+static void perform_valid_packet(u16 *n_packet_received, timeval *start_time, timeval *end_time,
+                            u8 packet_size, char *ip, u16 n_sequence, u8 ttl, t_times *times)
+{
+        ++*n_packet_received;
+        gettimeofday(end_time, NULL);
+        double time_elapsed = calcul_latency(*start_time, *end_time);
+        
+        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
+                            packet_size,
+                            ip,
+                            n_sequence,
+                            ttl,
+                            time_elapsed);
+                
+        realloc_push_time(times, time_elapsed);
+}
+
+static void perform_invalid_packet(t_data *data, i8 status_code, u8 packet_size,
+                                        iphdr *ip_hdr, icmphdr *icmp_hdr)
+{
+    char hostname_response_sender[NI_MAXHOST];
+
+    if (!ip_to_hostname(__ip_str(ip_hdr->saddr), hostname_response_sender)) {
+        close_sockfd_and_exit(data);
+    }
+    print_recv_err(status_code, packet_size, hostname_response_sender, icmp_hdr->code);
+    
+    if (data->flags & FLAG_V)
+        print_verbose_option(ip_hdr, icmp_hdr);
+}
+
 void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence,
                     u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times)
 {
@@ -97,19 +124,8 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
 
     memset(response, 0, sizeof(response));
 
-    timeval tv = {0, 100000};
-
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(data->sockfd, &readfds);
-
-    int retval = select(data->sockfd + 1, &readfds, NULL, NULL, &tv);
-    if (retval == -1) {
-        __log_error("select failed");
-        close_sockfd_and_exit(data);
-    } else if (!retval) {
+    if (!wait_response(data))
         return ;
-    }
 
     do {
         if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (sockaddr *)r_addr, addr_len)) <= 0) {
@@ -128,24 +144,9 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
-        ++*n_packet_received;
-        gettimeofday(end_time, NULL);
-        double time_elapsed = calcul_latency(*start_time, *end_time);
-        
-        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
-                    packet_size, __ip_str(ip_hdr->saddr), n_sequence,
-                    ttl, time_elapsed);
-        
-        realloc_push_time(times, time_elapsed);
+        perform_valid_packet(n_packet_received, start_time, end_time, packet_size,
+                                __ip_str(ip_hdr->saddr), n_sequence, ttl, times);
     } else {
-        char hostname_response_sender[NI_MAXHOST];
-
-        if (!ip_to_hostname(__ip_str(ip_hdr->saddr), hostname_response_sender)) {
-            close_sockfd_and_exit(data);
-        }
-        print_recv_err(status_code, packet_size, hostname_response_sender, icmp_hdr->code);
-        
-        if (data->flags & FLAG_V)
-            print_verbose_option(ip_hdr, icmp_hdr);
+        perform_invalid_packet(data, status_code, packet_size, ip_hdr, icmp_hdr);
     }
 }

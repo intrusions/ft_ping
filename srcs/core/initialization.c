@@ -22,7 +22,7 @@ bool initialization(t_data *data)
         __log_error("inet_pton error");
         return false;
     }
-
+    
     i32 optval = 1;
     if (setsockopt(data->sockfd, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) != 0) {
         __log_error("setsockopt error");
