@@ -1,5 +1,27 @@
 #include "inc.h"
 
+static bool ip_to_hostname(const char *ip, char *result_str)
+{
+    sockaddr_in sa;
+    char host[NI_MAXHOST];
+
+    memset(&sa, 0, sizeof(sa));
+    sa.sin_family = AF_INET;
+
+    if (inet_pton(AF_INET, ip, &(sa.sin_addr)) <= 0) {
+        __log_error("inet_pton error");
+        return false;
+    }
+
+    if (getnameinfo((sockaddr*)&sa, sizeof(sa), host, sizeof(host), NULL, 0, 0)) {
+        __log_error("getnameinfo error");
+        return false;
+    }
+
+    strcpy(result_str, host);
+    return true;
+}
+
 static void print_recv_err(i8 status_code, u8 packet_size, char *ip, u8 icmphdr_code)
 {   
     switch (status_code) {
@@ -116,7 +138,12 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
         
         realloc_push_time(times, time_elapsed);
     } else {
-        print_recv_err(status_code, packet_size, __ip_str(ip_hdr->saddr), icmp_hdr->code);
+        char hostname_response_sender[NI_MAXHOST];
+
+        if (!ip_to_hostname(__ip_str(ip_hdr->saddr), hostname_response_sender)) {
+            close_sockfd_and_exit(data);
+        }
+        print_recv_err(status_code, packet_size, hostname_response_sender, icmp_hdr->code);
         
         if (data->flags & FLAG_V)
             print_verbose_option(ip_hdr, icmp_hdr);
