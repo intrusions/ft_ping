@@ -13,7 +13,4 @@ void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence)
     packet->payload[sizeof(packet->payload) - 1] = 0;
 
     packet->hdr.checksum = checksum(packet, sizeof(*packet));
-    
-    if (data->flags & FLAG_D)
-        print_sent_packet(packet);
 }

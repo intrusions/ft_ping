@@ -16,18 +16,18 @@ void print_man(void)
 
 void print_header(t_data *data)
 {
-    fprintf(stdout, "PING %s (%s): 56 data bytes", data->hostname_in, data->hostname);
+    fprintf(stdout, "PING %s (%s): 56 data bytes", data->addr_in, data->addr);
 
     if (data->flags & FLAG_V)
         fprintf(stdout, ", id 0x%04x = %d", data->pid, data->pid);
     fprintf(stdout, "\n");
 }
 
-void print_statistics(u16 n_sequence, u16 n_packet_received, char *hostname_in, t_times *times)
+void print_statistics(u16 n_sequence, u16 n_packet_received, char *addr_in, t_times *times)
 {
     i32 packet_loss = (i32)(((n_sequence - n_packet_received) / (float)n_sequence) * 100);
     
-    fprintf(stdout, "--- %s ping statistics ---\n", hostname_in);
+    fprintf(stdout, "--- %s ping statistics ---\n", addr_in);
     fprintf(stdout, "%d packets transmitted, %d packets received, %d%% packet loss\n",
                 n_sequence, n_packet_received, packet_loss);
 

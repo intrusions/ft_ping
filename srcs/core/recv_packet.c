@@ -108,16 +108,16 @@ static void perform_invalid_packet(t_data *data, i8 status_code, u8 packet_size,
         print_verbose_option(ip_hdr, icmp_hdr);
 }
 
-void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_sequence,
-                    u16 *n_packet_received, timeval *start_time, timeval *end_time, t_times *times)
+void recv_packet(t_data *data, sockaddr_in *r_addr, u16 n_sequence, u16 *n_packet_received,
+                    timeval *start_time, timeval *end_time, t_times *times)
 {
-    u8 ttl;
-    u8 packet_size;
+    u8 ttl, packet_size;
     i32 bytes_received;
     char response[PING_MAX_PKT_SIZE];
 
     iphdr *ip_hdr;
     icmphdr *icmp_hdr;
+    socklen_t addr_len = sizeof(r_addr);
 
     memset(response, 0, sizeof(response));
 
@@ -125,7 +125,7 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len, u16 n_s
         return ;
 
     do {
-        if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (sockaddr *)r_addr, addr_len)) <= 0) {
+        if ((bytes_received = recvfrom(data->sockfd, response, sizeof(response), 0, (sockaddr *)r_addr, &addr_len)) <= 0) {
             __log_error("recvfrom error");
             close_sockfd_and_exit(data);
         }

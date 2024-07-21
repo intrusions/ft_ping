@@ -84,8 +84,8 @@ typedef struct {
     u16 pid;
     u8  flags;
     
-    char    *hostname_in;
-    char    hostname[INET6_ADDRSTRLEN];
+    char    *addr_in;
+    char    addr[INET6_ADDRSTRLEN];
 
     sockaddr_in dest;
 } t_data;
@@ -112,8 +112,8 @@ bool reverse_dns(char *ip, char *hostname);
 void prepare_packet(t_data *data, t_packet *packet, u16 n_sequence);
 void send_packet(t_data *data, t_packet *packet, timeval *start_time,
                     u16 *n_sequence);
-void recv_packet(t_data *data, sockaddr_in *r_addr, socklen_t *addr_len,
-                    u16 n_sequence, u16 *n_packet_received, timeval *start_time,
+void recv_packet(t_data *data, sockaddr_in *r_addr, u16 n_sequence,
+                    u16 *n_packet_received, timeval *start_time,
                     timeval *end_time, t_times *times);
 
 /* utils */
@@ -134,7 +134,7 @@ void realloc_push_time(t_times *times, double time);
 void free_times(t_times *times);
 void close_sockfd_and_exit(t_data *data);
 
-bool ip_to_hostname(const char *ip, char *res);
+bool ip_to_hostname(char *ip, char *res);
 
 /* debug */
 void print_sent_packet(t_packet *packet);

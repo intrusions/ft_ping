@@ -1,6 +1,6 @@
 #include "inc.h"
 
-bool ip_to_hostname(const char *ip, char *res)
+bool ip_to_hostname(char *ip, char *res)
 {
     sockaddr_in sa;
     char host[NI_MAXHOST];

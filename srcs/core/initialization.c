@@ -18,7 +18,7 @@ bool initialization(t_data *data)
     memset(&data->dest, 0, sizeof(data->dest));
     data->dest.sin_family = AF_INET;
     
-    if (inet_pton(AF_INET, data->hostname, &data->dest.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, data->addr, &data->dest.sin_addr) <= 0) {
         __log_error("inet_pton error");
         return false;
     }
