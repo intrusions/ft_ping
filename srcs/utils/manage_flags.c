@@ -11,6 +11,8 @@ bool manage_flags(i32 ac, char **av, u8 *flags)
             *flags |= FLAG_V;
         } else if (!strcmp(av[index], "-d") || !strcmp(av[index], "--debug")) {
             *flags |= FLAG_D;
+        } else if (!strcmp(av[index], "-q")) {
+            *flags |= FLAG_Q;
         }
     }
     return true;

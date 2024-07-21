@@ -29,8 +29,9 @@
 //                                   Define                                  //
 // ========================================================================= //
 
-#define FLAG_V 0x01
-#define FLAG_D 0x02
+#define FLAG_V 0x01 << 0
+#define FLAG_D 0x01 << 1
+#define FLAG_Q 0x01 << 2
 
 #define PING_SENDING_DELAY 1
 #define PING_MAX_PKT_SIZE 84

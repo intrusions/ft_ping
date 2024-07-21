@@ -80,17 +80,20 @@ static bool wait_response(t_data *data)
     return true;
 }
 
-static void perform_valid_packet(u16 *n_packet_received, timeval *start_time, timeval *end_time,
+static void perform_valid_packet(t_data *data, u16 *n_packet_received, timeval *start_time, timeval *end_time,
                             u8 packet_size, char *ip, u16 n_sequence, u8 ttl, t_times *times)
 {
         ++*n_packet_received;
         gettimeofday(end_time, NULL);
         double time_elapsed = calcul_latency(*start_time, *end_time);
         
-        fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
-                            packet_size, ip, n_sequence,
-                            ttl, time_elapsed);
-                
+
+        if (!(data->flags & FLAG_Q)) {
+            fprintf(stdout, "%d bytes from %s: icmp_seq=%d ttl=%d time=%.3f ms\n",
+                                packet_size, ip, n_sequence,
+                                ttl, time_elapsed);
+                    
+        }
         realloc_push_time(times, time_elapsed);
 }
 
@@ -141,7 +144,7 @@ void recv_packet(t_data *data, sockaddr_in *r_addr, u16 n_sequence, u16 *n_packe
 
     i8 status_code = verify_packet_integrity(data, ip_hdr, icmp_hdr, n_sequence, &ttl);
     if (status_code == ICMP_PACKET_SUCCESS) {
-        perform_valid_packet(n_packet_received, start_time, end_time, packet_size,
+        perform_valid_packet(data, n_packet_received, start_time, end_time, packet_size,
                                 __ip_str(ip_hdr->saddr), n_sequence, ttl, times);
     } else {
         perform_invalid_packet(data, status_code, packet_size, ip_hdr, icmp_hdr);
