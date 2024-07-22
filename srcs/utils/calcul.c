@@ -18,7 +18,7 @@ void calcul_statistics(t_times *times, double *min, double *max, double *avg, do
     *min = times->arr[0];
     *max = times->arr[0];
 
-    for (uint16_t i = 0; i < times->size; i++) {
+    for (u16 i = 0; i < times->size; i++) {
 
         sum += times->arr[i];
         
@@ -31,7 +31,7 @@ void calcul_statistics(t_times *times, double *min, double *max, double *avg, do
 
     *avg = sum / times->size;
 
-    for (uint16_t i = 0; i < times->size; i++) {
+    for (u16 i = 0; i < times->size; i++) {
         double diff = times->arr[i] - *avg;
         sum_sq_diff += diff * diff;
     }

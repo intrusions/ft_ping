@@ -16,25 +16,24 @@ static bool set_option_value(t_data *data, i32 index, i32 ac, char **av, u8 flag
         }
         data->flags |= flag;
         return true;
-    } else {
+    }
 
-        u8 len = strlen(av[++index]);
-        for (u8 i = 0; i < len; i++) {
-            if (!isdigit(av[index][i])) {
-                fprintf(stderr, "ping: invalid value (`%s')\n", av[index]);
-                return false;
-            }
-        }
-
-        data->flags |= flag;
-
-        if (!strcmp(av[index - 1], "-i")) {
-            data->option.option_delay_value = atoi(av[index]);
-        } else if (!strcmp(av[index - 1], "-c")) {
-            data->option.option_count_value = atoi(av[index]);
+    u8 len = strlen(av[++index]);
+    for (u8 i = 0; i < len; i++) {
+        if (!isdigit(av[index][i])) {
+            fprintf(stderr, "ping: invalid value (`%s')\n", av[index]);
+            return false;
         }
     }
-    
+
+    data->flags |= flag;
+
+    if (!strcmp(av[index - 1], "-i")) {
+        data->option.option_delay_value = atoi(av[index]);
+    } else if (!strcmp(av[index - 1], "-c")) {
+        data->option.option_count_value = atoi(av[index]);
+    }
+
     return true;
 }
 
