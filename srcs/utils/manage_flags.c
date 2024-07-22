@@ -12,7 +12,7 @@ static bool set_option_value(t_data *data, i32 index, i32 ac, char **av, u8 flag
         if (strlen(av[index + 1]) < PING_MAX_PATTERN_SIZE) {
             strncpy(data->option.option_pattern_value, av[index + 1], strlen(av[index + 1]));
         } else {
-            strncpy(data->option.option_pattern_value, av[index + 1], 16);
+            strncpy(data->option.option_pattern_value, av[index + 1], PING_MAX_PATTERN_SIZE);
         }
         data->flags |= flag;
         return true;
