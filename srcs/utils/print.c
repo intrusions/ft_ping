@@ -10,6 +10,12 @@ void print_man(void)
         "Options:\n"
         "   <destination>      dns name or ip address\n"
         "   -v                 verbose output\n"
+        "   -d                 debug mode\n"
+        "   -c                 stop after sending NUMBER packets\n"
+        "   -f                 flood ping\n"
+        "   -i                 modify delay\n"
+        "   -p                 modify pattern payload\n"
+        "   -q                 quiet output\n"
         "   -? -h --help       print manual\n"
     );
 }

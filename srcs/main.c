@@ -1,6 +1,6 @@
 #include "inc.h"
 
-bool SIG_EXIT;
+volatile bool SIG_EXIT;
 
 static void sig_handler(const int signal)
 {
