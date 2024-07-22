@@ -38,9 +38,9 @@
 #define FLAG_I 0x01 << 5    // modify delay
 #define FLAG_P 0x01 << 6    // modify payload
 
-#define PING_SENDING_DELAY 1
-#define PING_MAX_PKT_SIZE 84
+#define PING_DEFAULT_SENDING_DELAY 1
 #define PING_PKT_SIZE 64
+#define PING_MAX_PKT_SIZE 1024
 #define PING_MAX_PATTERN_SIZE 16
 
 #define ICMP_PACKET_SUCCESS     0

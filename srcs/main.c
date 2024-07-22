@@ -45,7 +45,7 @@ int main(int ac, char **av)
     t_data data;
     memset(&data, 0, sizeof(data));
     data.addr_in = av[ac - 1];
-    data.option.option_delay_value = 1;
+    data.option.option_delay_value = PING_DEFAULT_SENDING_DELAY;
 
     av++, ac--;
 
